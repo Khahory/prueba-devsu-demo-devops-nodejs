@@ -17,6 +17,11 @@ jobs:
     steps:
       - name: Mostrar versión de Node.js - PR
         run: node --version
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
   show-node-version-on-tag:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
@@ -24,6 +29,11 @@ jobs:
     steps:
       - name: Mostrar versión de Node.js - Tag
         run: node --version
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
   show-node-version-on-main-push:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -31,3 +41,8 @@ jobs:
     steps:
       - name: Mostrar versión de Node.js - Main Branch
         run: node --version
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
