@@ -1,6 +1,3 @@
-name: 'Deploy to K8s/EKS'
-description: 'Configures base runner and runs deployment'
-
 inputs:
   aws_region:
     description: 'AWS runner region'
@@ -11,6 +8,12 @@ inputs:
     required: true
   version:
     description: 'Version to deploy as a git reference (branch, tag)'
+    required: true
+  docker_username:
+    description: 'Docker Hub username'
+    required: true
+  docker_password:
+    description: 'Docker Hub password'
     required: true
 
 runs:
@@ -23,5 +26,5 @@ runs:
     - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
-        username: ${{ vars.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        username: ${{ inputs.docker_username }}
+        password: ${{ inputs.docker_password }}

@@ -28,3 +28,5 @@ jobs:
         with:
           version: '${{ github.ref_name }}'
           environment: '${{ env.ENVIRONMENT }}'
+          docker_username: ${{ vars.DOCKER_USERNAME }}
+          docker_password: ${{ secrets.DOCKER_PASSWORD }}
