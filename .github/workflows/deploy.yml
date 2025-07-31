@@ -46,3 +46,35 @@ jobs:
         with:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
+---
+name: 🚀 Deployment
+
+on:
+  pull_request:
+    branches:
+      - stage
+  push:
+    branches:
+      - main
+    tags:
+      - 'v[0-9]{8}-*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -leo pipefail {0}
+    steps:
+      - name: 💻 Checkout current code ref
+        uses: actions/checkout@v4
+
+      - name: 📝 Set environment variables
+        uses: ./.github/actions/set-env
+
+      - name: 🚀 Run deployment tasks
+        uses: ./.github/actions/deploy
+        with:
+          version: '${{ github.ref_name }}'
+          environment: '${{ env.ENVIRONMENT }}'
