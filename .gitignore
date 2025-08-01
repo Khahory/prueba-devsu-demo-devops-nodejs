@@ -128,3 +128,7 @@ dist
 # Local env files
 .idea
 .env
+.env.dev
+.env.prod
+.env.staging
+infrastructure/secrets/

@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app-dev:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.dev
+    container_name: devsu-nodejs-api-dev
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.dev
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - app_data_dev:/app/data
+      - app_logs_dev:/app/logs
+    restart: unless-stopped
+    networks:
+      - app-network-dev
+
+volumes:
+  app_data_dev:
+    driver: local
+  app_logs_dev:
+    driver: local
+
+networks:
+  app-network-dev:
+    driver: bridge 
