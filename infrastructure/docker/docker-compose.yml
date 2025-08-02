@@ -3,9 +3,13 @@ version: '3.8'
 services:
   app:
     build:
-      context: .
+      context: ../..
       dockerfile: infrastructure/docker/Dockerfile
       target: runner
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    platform: linux/arm64
     container_name: devsu-nodejs-api
     ports:
       - "8000:8000"
@@ -29,6 +33,7 @@ services:
   # Reverse proxy for production
   nginx:
     image: nginx:alpine
+    platform: linux/arm64
     container_name: devsu-nginx
     ports:
       - "80:80"

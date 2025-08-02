@@ -1,4 +1,10 @@
 # Multi-stage build for optimized production image
+# Support for both AMD64 and ARM64 architectures
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+
 FROM node:18-alpine AS base
 
 # Set working directory
@@ -54,6 +60,7 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 LABEL maintainer="Devsu Team - demo Angel"
 LABEL version="1.0.0"
 LABEL description="Node.js API with SQLite database"
+LABEL architecture="arm64"
 
 # Create volume for persistent data
 VOLUME ["/app/data", "/app/logs"]

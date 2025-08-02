@@ -6,6 +6,10 @@ services:
       context: .
       dockerfile: infrastructure/docker/Dockerfile
       target: runner
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    platform: linux/arm64
     container_name: devsu-nodejs-api-staging
     ports:
       - "8001:8000"
@@ -29,6 +33,7 @@ services:
   # Nginx reverse proxy for staging
   nginx-staging:
     image: nginx:alpine
+    platform: linux/arm64
     container_name: devsu-nginx-staging
     ports:
       - "8080:80"

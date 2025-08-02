@@ -3,8 +3,12 @@ version: '3.8'
 services:
   app-dev:
     build:
-      context: .
+      context: ../..
       dockerfile: infrastructure/docker/Dockerfile.dev
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    platform: linux/arm64
     container_name: devsu-nodejs-api-dev
     ports:
       - "8000:8000"

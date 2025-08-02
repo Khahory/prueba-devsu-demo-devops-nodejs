@@ -1,4 +1,10 @@
 # Development Dockerfile with hot reload
+# Support for both AMD64 and ARM64 architectures
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+
 FROM node:18-alpine
 
 # Set working directory
@@ -35,6 +41,7 @@ LABEL maintainer="Devsu Team - demo Angel"
 LABEL version="1.0.0-dev"
 LABEL description="Node.js API Development Environment"
 LABEL stage="development"
+LABEL architecture="arm64"
 
 # Use nodemon for hot reload in development
 CMD ["nodemon", "--legacy-watch", "index.js"] 

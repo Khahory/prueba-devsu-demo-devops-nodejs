@@ -158,18 +158,29 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker-container
+          platforms: linux/amd64,linux/arm64
 
       - name: 🐳 Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./infrastructure/docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ${{ vars.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
             ${{ vars.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            BUILDPLATFORM=${{ runner.os }}/${{ runner.arch }}
+            TARGETPLATFORM=linux/arm64
+
+      - name: 🔍 Verify ARM64 Image
+        uses: ./.github/actions/verify-arm
+        with:
+          image_name: ${{ vars.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}
+          image_tag: ${{ github.sha }}
 
   # ===== DEPLOYMENT =====
   deploy:
