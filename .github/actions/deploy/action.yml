@@ -113,9 +113,6 @@ runs:
         
         # Apply the deployment
         kubectl apply -f $DEPLOYMENT_FILE -n ${{ env.NAMESPACE }}
-        
-        # Also apply other resources if they exist
-        kubectl apply -f infrastructure/k8s/${{ inputs.environment }}/ -n ${{ env.NAMESPACE }} || true
 
     - name: 🔄 Wait for deployment rollout
       shell: bash -leo pipefail {0}

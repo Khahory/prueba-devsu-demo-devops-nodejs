@@ -22,8 +22,7 @@ spec:
     spec:
       volumes:
       - name: sqlite-data
-        persistentVolumeClaim:
-          claimName: devsu-demo-sqlite-pvc
+        emptyDir: {}
       containers:
       - name: devsu-demo-app
         image: khakharis/devsu-demo:latest

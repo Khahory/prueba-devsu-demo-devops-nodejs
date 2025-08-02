@@ -9,8 +9,8 @@ metadata:
     component: database
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
-  storageClassName: "" 
+  storageClassName: gp2 
