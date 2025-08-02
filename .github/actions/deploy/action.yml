@@ -50,6 +50,7 @@ runs:
           NAMESPACE="devsu-demo-${{ inputs.environment }}"
         fi
         echo "Using namespace: $NAMESPACE"
+        echo "NAMESPACE=$NAMESPACE" >> $GITHUB_ENV
 
     - name: 🔐 Configure AWS credentials
       shell: bash -leo pipefail {0}
@@ -95,18 +96,18 @@ runs:
       shell: bash -leo pipefail {0}
       run: |
         # Update image tag in deployment
-        kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n $NAMESPACE || \
-        kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n $NAMESPACE || \
+        kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n ${{ env.NAMESPACE }} || \
+        kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n ${{ env.NAMESPACE }} || \
         echo "Deployment not found, creating new deployment..."
 
     - name: 🔄 Wait for deployment rollout
       shell: bash -leo pipefail {0}
       run: |
-        kubectl rollout status deployment/devsu-demo-app -n $NAMESPACE --timeout=300s
+        kubectl rollout status deployment/devsu-demo-app -n ${{ env.NAMESPACE }} --timeout=300s
 
     - name: 📊 Verify deployment
       shell: bash -leo pipefail {0}
       run: |
-        kubectl get pods -n $NAMESPACE
-        kubectl get services -n $NAMESPACE
-        kubectl get ingress -n $NAMESPACE
+        kubectl get pods -n ${{ env.NAMESPACE }}
+        kubectl get services -n ${{ env.NAMESPACE }}
+        kubectl get ingress -n ${{ env.NAMESPACE }}
