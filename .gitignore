@@ -138,7 +138,6 @@ infrastructure/secrets/
 terraform.tfvars
 *.tfstate
 *.tfstate.backup
-.terraform.lock.hcl
 .terraform/
 
 # Sqlite database files
