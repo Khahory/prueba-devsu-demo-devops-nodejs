@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: devsu-demo-app
-        image: khakharis/devsu-demo:3a95cb0b02be1ef4405c0930ba10106b2ae9922d
+        image: devsu-demo:latest
         ports:
         - containerPort: 8000
           name: http

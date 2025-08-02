@@ -15,6 +15,15 @@ inputs:
   docker_password:
     description: 'Docker Hub password'
     required: true
+  eks_cluster_name:
+    description: 'EKS cluster name (optional, will be auto-generated based on environment)'
+    required: false
+  aws_access_key_id:
+    description: 'AWS Access Key ID'
+    required: true
+  aws_secret_access_key:
+    description: 'AWS Secret Access Key'
+    required: true
 
 runs:
   using: "composite"
@@ -28,3 +37,63 @@ runs:
       with:
         username: ${{ inputs.docker_username }}
         password: ${{ inputs.docker_password }}
+
+    - name: 🔐 Configure AWS credentials
+      shell: bash -leo pipefail {0}
+      run: |
+        aws configure set aws_access_key_id ${{ inputs.aws_access_key_id }}
+        aws configure set aws_secret_access_key ${{ inputs.aws_secret_access_key }}
+        aws configure set region ${{ inputs.aws_region }}
+
+    - name: 📦 Install kubectl
+      shell: bash -leo pipefail {0}
+      run: |
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+
+    - name: 🔗 Update kubeconfig for EKS
+      shell: bash -leo pipefail {0}
+      run: |
+        # Set cluster name based on environment
+        if [ "${{ inputs.environment }}" = "prod" ]; then
+          EKS_CLUSTER_NAME="devsu-demo-prod-eks"
+        elif [ "${{ inputs.environment }}" = "staging" ]; then
+          EKS_CLUSTER_NAME="devsu-demo-stage-eks"
+        else
+          EKS_CLUSTER_NAME="devsu-demo-${{ inputs.environment }}-eks"
+        fi
+        
+        # Override with provided cluster name if specified
+        if [ -n "${{ inputs.eks_cluster_name }}" ]; then
+          EKS_CLUSTER_NAME="${{ inputs.eks_cluster_name }}"
+        fi
+        
+        echo "Connecting to EKS cluster: $EKS_CLUSTER_NAME"
+        aws eks update-kubeconfig --region ${{ inputs.aws_region }} --name $EKS_CLUSTER_NAME
+
+    - name: 🔍 Verify cluster connection
+      shell: bash -leo pipefail {0}
+      run: |
+        kubectl cluster-info
+        kubectl get nodes
+
+    - name: 🚀 Deploy to EKS
+      shell: bash -leo pipefail {0}
+      run: |
+        # Update image tag in deployment
+        kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n devsu-demo-${{ inputs.environment }} || \
+        kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n devsu-demo-${{ inputs.environment }} || \
+        echo "Deployment not found, creating new deployment..."
+
+    - name: 🔄 Wait for deployment rollout
+      shell: bash -leo pipefail {0}
+      run: |
+        kubectl rollout status deployment/devsu-demo-app -n devsu-demo-${{ inputs.environment }} --timeout=300s
+
+    - name: 📊 Verify deployment
+      shell: bash -leo pipefail {0}
+      run: |
+        kubectl get pods -n devsu-demo-${{ inputs.environment }}
+        kubectl get services -n devsu-demo-${{ inputs.environment }}
+        kubectl get ingress -n devsu-demo-${{ inputs.environment }}

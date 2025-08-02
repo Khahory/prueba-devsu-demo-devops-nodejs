@@ -40,8 +40,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ vars.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
-            ${{ vars.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}:latest
+            ${{ vars.DOCKER_USERNAME }}/devsu-demo:${{ github.sha }}
+            ${{ vars.DOCKER_USERNAME }}/devsu-demo:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
@@ -51,4 +51,4 @@ jobs:
       - name: 📋 Image Info
         run: |
           echo "Built images for architectures:"
-          docker buildx imagetools inspect ${{ vars.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }} 
+          docker buildx imagetools inspect ${{ vars.DOCKER_USERNAME }}/devsu-demo:${{ github.sha }} 
