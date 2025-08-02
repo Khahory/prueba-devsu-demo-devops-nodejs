@@ -200,7 +200,7 @@ jobs:
       - name: 🚀 Run deployment tasks
         uses: ./.github/actions/deploy
         with:
-          version: '${{ github.ref_name }}'
+          version: '${{ github.sha }}'
           environment: '${{ env.ENVIRONMENT }}'
           docker_username: ${{ vars.DOCKER_USERNAME }}
           docker_password: ${{ secrets.DOCKER_PASSWORD }}

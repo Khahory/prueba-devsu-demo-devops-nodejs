@@ -96,9 +96,10 @@ runs:
       shell: bash -leo pipefail {0}
       run: |
         # Update image tag in deployment
+        echo "Updating deployment with image: ${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }}"
         kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n ${{ env.NAMESPACE }} || \
-        kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n ${{ env.NAMESPACE }} || \
-        echo "Deployment not found, creating new deployment..."
+        echo "Failed to update deployment, checking if deployment exists..."
+        kubectl get deployment devsu-demo-app -n ${{ env.NAMESPACE }} || echo "Deployment not found"
 
     - name: 🔄 Wait for deployment rollout
       shell: bash -leo pipefail {0}
