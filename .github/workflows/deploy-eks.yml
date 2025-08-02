@@ -65,7 +65,7 @@ jobs:
           if [ "${{ inputs.environment }}" = "prod" ]; then
             EKS_CLUSTER_NAME="devsu-demo-prod-eks"
           elif [ "${{ inputs.environment }}" = "staging" ] || [ "${{ inputs.environment }}" = "stage" ]; then
-            EKS_CLUSTER_NAME="devsu-demo-staging-eks"
+            EKS_CLUSTER_NAME="devsu-demo-stage-eks"
           else
             EKS_CLUSTER_NAME="devsu-demo-${{ inputs.environment }}-eks"
           fi
