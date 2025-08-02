@@ -132,6 +132,7 @@ dist
 .env.prod
 .env.staging
 infrastructure/secrets/
+.secrets
 
 # Sqlite database files
 *.sqlite

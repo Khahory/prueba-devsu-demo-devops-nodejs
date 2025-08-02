@@ -4,19 +4,19 @@ export const validateSchema = (schema) => async (request, response, next) => {
             {
                 body: request.body,
                 query: request.query,
-                params: request.params,
+                params: request.params
             },
             { abortEarly: false }
-        )
-        return next()
+        );
+        next();
     } catch (error) {
         response.status(400).send({
             errors: (error).inner.map(
                 ({ message, path }) => ({
                     message,
-                    path,
+                    path
                 })
-            ),
-        })
+            )
+        });
     }
-}
+};

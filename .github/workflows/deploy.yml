@@ -1,14 +1,20 @@
-name: 🚀 Deployment
+name: 🚀 Manual Deployment
 
 on:
-  pull_request:
-    branches:
-      - stage
-  push:
-    branches:
-      - main
-    tags:
-      - 'v[0-9]{8}-*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'stage'
+        type: choice
+        options:
+          - stage
+          - production
+      version:
+        description: 'Version to deploy'
+        required: true
+        default: 'main'
 
 jobs:
   deploy:
@@ -26,7 +32,7 @@ jobs:
       - name: 🚀 Run deployment tasks
         uses: ./.github/actions/deploy
         with:
-          version: '${{ github.ref_name }}'
-          environment: '${{ env.ENVIRONMENT }}'
+          version: '${{ inputs.version }}'
+          environment: '${{ inputs.environment }}'
           docker_username: ${{ vars.DOCKER_USERNAME }}
           docker_password: ${{ secrets.DOCKER_PASSWORD }}

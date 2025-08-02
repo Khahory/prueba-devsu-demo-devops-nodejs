@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Package files
+package-lock.json
+yarn.lock
+
+# Environment files
+.env*
+
+# Logs
+*.log
+
+# Documentation
+docs/
+
+# Infrastructure
+infrastructure/
+
+# Data files
+data/
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+
+# Configuration files that should not be formatted
+*.config.js
+jest.config.js
+nodemon.json 
