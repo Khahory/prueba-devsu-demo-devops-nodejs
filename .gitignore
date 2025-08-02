@@ -133,6 +133,7 @@ dist
 .env.staging
 infrastructure/secrets/
 .secrets
+.tfvars
 
 # Sqlite database files
 *.sqlite
