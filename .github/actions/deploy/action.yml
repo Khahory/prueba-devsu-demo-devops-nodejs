@@ -95,11 +95,27 @@ runs:
     - name: 🚀 Deploy to EKS
       shell: bash -leo pipefail {0}
       run: |
-        # Update image tag in deployment
+        # Update image tag in deployment YAML
         echo "Updating deployment with image: ${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }}"
-        kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n ${{ env.NAMESPACE }} || \
-        echo "Failed to update deployment, checking if deployment exists..."
-        kubectl get deployment devsu-demo-app -n ${{ env.NAMESPACE }} || echo "Deployment not found"
+        
+        # Create temporary deployment file with updated image
+        if [ "${{ inputs.environment }}" = "prod" ] || [ "${{ inputs.environment }}" = "production" ]; then
+          DEPLOYMENT_FILE="infrastructure/k8s/prod/deployment.yaml"
+        elif [ "${{ inputs.environment }}" = "staging" ] || [ "${{ inputs.environment }}" = "stage" ]; then
+          DEPLOYMENT_FILE="infrastructure/k8s/staging/deployment.yaml"
+        else
+          echo "Environment ${{ inputs.environment }} not supported"
+          exit 1
+        fi
+        
+        # Update image in deployment file
+        sed -i "s|image: .*/devsu-demo:.*|image: ${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }}|g" $DEPLOYMENT_FILE
+        
+        # Apply the deployment
+        kubectl apply -f $DEPLOYMENT_FILE -n ${{ env.NAMESPACE }}
+        
+        # Also apply other resources if they exist
+        kubectl apply -f infrastructure/k8s/${{ inputs.environment }}/ -n ${{ env.NAMESPACE }} || true
 
     - name: 🔄 Wait for deployment rollout
       shell: bash -leo pipefail {0}
