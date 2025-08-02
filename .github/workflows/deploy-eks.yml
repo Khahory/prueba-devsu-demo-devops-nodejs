@@ -38,9 +38,9 @@ jobs:
       - name: 🔧 Set namespace
         run: |
           # Map environment to correct namespace name
-          if [ "${{ inputs.environment }}" = "staging" ]; then
+          if [ "${{ inputs.environment }}" = "staging" ] || [ "${{ inputs.environment }}" = "stage" ]; then
             echo "NAMESPACE=devsu-demo-staging" >> $GITHUB_ENV
-          elif [ "${{ inputs.environment }}" = "prod" ]; then
+          elif [ "${{ inputs.environment }}" = "prod" ] || [ "${{ inputs.environment }}" = "production" ]; then
             echo "NAMESPACE=devsu-demo-prod" >> $GITHUB_ENV
           else
             echo "NAMESPACE=devsu-demo-${{ inputs.environment }}" >> $GITHUB_ENV
@@ -64,7 +64,7 @@ jobs:
           # Set cluster name based on environment
           if [ "${{ inputs.environment }}" = "prod" ]; then
             EKS_CLUSTER_NAME="devsu-demo-prod-eks"
-          elif [ "${{ inputs.environment }}" = "staging" ]; then
+          elif [ "${{ inputs.environment }}" = "staging" ] || [ "${{ inputs.environment }}" = "stage" ]; then
             EKS_CLUSTER_NAME="devsu-demo-staging-eks"
           else
             EKS_CLUSTER_NAME="devsu-demo-${{ inputs.environment }}-eks"

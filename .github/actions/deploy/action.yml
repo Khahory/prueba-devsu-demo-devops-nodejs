@@ -42,9 +42,9 @@ runs:
       shell: bash -leo pipefail {0}
       run: |
         # Map environment to correct namespace name
-        if [ "${{ inputs.environment }}" = "staging" ]; then
+        if [ "${{ inputs.environment }}" = "staging" ] || [ "${{ inputs.environment }}" = "stage" ]; then
           NAMESPACE="devsu-demo-staging"
-        elif [ "${{ inputs.environment }}" = "prod" ]; then
+        elif [ "${{ inputs.environment }}" = "prod" ] || [ "${{ inputs.environment }}" = "production" ]; then
           NAMESPACE="devsu-demo-prod"
         else
           NAMESPACE="devsu-demo-${{ inputs.environment }}"
@@ -70,9 +70,9 @@ runs:
       shell: bash -leo pipefail {0}
       run: |
         # Set cluster name based on environment
-        if [ "${{ inputs.environment }}" = "prod" ]; then
+        if [ "${{ inputs.environment }}" = "prod" ] || [ "${{ inputs.environment }}" = "production" ]; then
           EKS_CLUSTER_NAME="devsu-demo-prod-eks"
-        elif [ "${{ inputs.environment }}" = "staging" ]; then
+        elif [ "${{ inputs.environment }}" = "staging" ] || [ "${{ inputs.environment }}" = "stage" ]; then
           EKS_CLUSTER_NAME="devsu-demo-staging-eks"
         else
           EKS_CLUSTER_NAME="devsu-demo-${{ inputs.environment }}-eks"
