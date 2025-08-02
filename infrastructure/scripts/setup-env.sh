@@ -41,6 +41,11 @@ SESSION_SECRET=$(generate_secret)
 # Database Sync Configuration
 FORCE_SYNC=false
 
+# Other Configuration
+DOCKER_USERNAME=
+DOCKER_PASSWORD=
+SNYK_TOKEN=
+
 # External Services (if needed)
 # API_KEY=your_api_key_here
 # DATABASE_URL=your_database_url_here
