@@ -20,12 +20,19 @@ spec:
         environment: production
         component: app
     spec:
+      volumes:
+      - name: sqlite-data
+        persistentVolumeClaim:
+          claimName: devsu-demo-sqlite-pvc
       containers:
       - name: devsu-demo-app
         image: khakharis/devsu-demo:latest
         ports:
         - containerPort: 8000
           name: http
+        volumeMounts:
+        - name: sqlite-data
+          mountPath: /app/data
         env:
         - name: NODE_ENV
           valueFrom:

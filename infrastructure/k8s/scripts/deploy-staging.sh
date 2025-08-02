@@ -25,6 +25,10 @@ minikube addons enable ingress
 echo "🏗️  Creating namespace devsu-demo-staging..."
 kubectl apply -f ../namespaces/namespaces.yaml
 
+# Apply PersistentVolumeClaim
+echo "💾 Applying PersistentVolumeClaim..."
+kubectl apply -f persistent-volume-claim.yaml
+
 # Apply ConfigMap and Secret
 echo "🔧 Applying ConfigMap and Secret..."
 kubectl apply -f configmap.yaml

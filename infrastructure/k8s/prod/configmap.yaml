@@ -11,5 +11,5 @@ data:
   NODE_ENV: "production"
   PORT: "8000"
   LOG_LEVEL: "warn"
-  DATABASE_NAME: "./data/test-db.sqlite"
+  DATABASE_NAME: "/app/data/test-db.sqlite"
   FORCE_SYNC: "false" 
