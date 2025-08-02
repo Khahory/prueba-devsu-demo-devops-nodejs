@@ -133,7 +133,13 @@ dist
 .env.staging
 infrastructure/secrets/
 .secrets
+
+# Terraform files
 terraform.tfvars
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+.terraform/
 
 # Sqlite database files
 *.sqlite
