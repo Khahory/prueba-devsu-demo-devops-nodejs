@@ -73,7 +73,7 @@ runs:
         if [ "${{ inputs.environment }}" = "prod" ]; then
           EKS_CLUSTER_NAME="devsu-demo-prod-eks"
         elif [ "${{ inputs.environment }}" = "staging" ]; then
-          EKS_CLUSTER_NAME="devsu-demo-stage-eks"
+          EKS_CLUSTER_NAME="devsu-demo-staging-eks"
         else
           EKS_CLUSTER_NAME="devsu-demo-${{ inputs.environment }}-eks"
         fi
