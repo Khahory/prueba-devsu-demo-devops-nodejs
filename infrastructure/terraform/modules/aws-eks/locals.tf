@@ -24,7 +24,7 @@ locals {
   )
 
   # Node group configuration
-  instance_type = var.instance_type != null ? var.instance_type : "t4g.micro"
+  instance_type = var.environment == "stage" ? "t4g.small" : "t4g.small"
 
   desired_size = var.desired_size != null ? var.desired_size : 1
   max_size     = var.max_size != null ? var.max_size : 2
