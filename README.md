@@ -76,9 +76,16 @@ npm i
 
 ### Database
 
-The database is generated as a file in the main path when the project is first run, and its name is `dev.sqlite`.
+The application now uses **MariaDB** for better scalability with multiple pods in Kubernetes.
 
-Consider giving access permissions to the file for proper functioning.
+**Previous SQLite Configuration:**
+- The database was generated as a file in the main path when the project is first run, and its name was `dev.sqlite`.
+- Consider giving access permissions to the file for proper functioning.
+
+**Current MariaDB Configuration:**
+- Database runs as a separate service in Kubernetes
+- Supports multiple application pods
+- Secure credential management with Kubernetes Secrets
 
 ## Usage
 

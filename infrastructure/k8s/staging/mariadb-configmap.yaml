@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mariadb-config
+  namespace: devsu-demo-staging
+  labels:
+    app: mariadb
+    environment: staging
+    component: database
+data:
+  MYSQL_DATABASE: "devsu_demo_staging" 

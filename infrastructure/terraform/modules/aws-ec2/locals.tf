@@ -12,7 +12,7 @@ locals {
   instance_type = (
     var.environment == "stage"
     ? "t4g.micro"
-    : "t4g.small"
+    : "t4g.medium"
   )
 
   key_name = (

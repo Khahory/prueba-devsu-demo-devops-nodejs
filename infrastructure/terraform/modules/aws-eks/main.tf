@@ -1,3 +1,6 @@
+# ===== DATA SOURCES =====
+data "aws_caller_identity" "current" {}
+
 # ===== EKS CLUSTER =====
 resource "aws_eks_cluster" "this" {
   name     = local.cluster_name
@@ -97,6 +100,31 @@ resource "aws_iam_role" "eks_node_group" {
   tags = merge(var.tags, local.tags_node_group)
 }
 
+# EBS CSI Driver Role
+resource "aws_iam_role" "ebs_csi_driver" {
+  name = "${local.cluster_name}-ebs-csi-driver-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Effect = "Allow"
+        Principal = {
+          Federated = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${replace(aws_eks_cluster.this.identity[0].oidc[0].issuer, "https://", "")}"
+        }
+        Condition = {
+          StringEquals = {
+            "${replace(aws_eks_cluster.this.identity[0].oidc[0].issuer, "https://", "")}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = merge(var.tags, local.tags_cluster)
+}
+
 # ===== IAM ROLE POLICY ATTACHMENTS =====
 # Cluster policies
 resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
@@ -123,6 +151,12 @@ resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
 resource "aws_iam_role_policy_attachment" "ec2_container_registry_read_only" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.eks_node_group.name
+}
+
+# EBS CSI Driver policies
+resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  role       = aws_iam_role.ebs_csi_driver.name
 }
 
 # ===== SECURITY GROUPS =====
@@ -205,6 +239,20 @@ resource "aws_eks_addon" "kube_proxy" {
 
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
+
+  depends_on = [aws_eks_node_group.this]
+}
+
+# EBS CSI Driver Add-on
+resource "aws_eks_addon" "ebs_csi" {
+  cluster_name  = aws_eks_cluster.this.name
+  addon_name    = "aws-ebs-csi-driver"
+  addon_version = "v1.46.0-eksbuild.1"
+
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
+
+  service_account_role_arn = aws_iam_role.ebs_csi_driver.arn
 
   depends_on = [aws_eks_node_group.this]
 } 

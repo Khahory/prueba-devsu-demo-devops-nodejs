@@ -68,6 +68,11 @@ output "node_group_role_arn" {
   value       = aws_iam_role.eks_node_group.arn
 }
 
+output "ebs_csi_driver_role_arn" {
+  description = "The ARN of the EBS CSI Driver IAM role"
+  value       = aws_iam_role.ebs_csi_driver.arn
+}
+
 # Security Group outputs
 output "cluster_security_group_id" {
   description = "The ID of the EKS cluster security group"

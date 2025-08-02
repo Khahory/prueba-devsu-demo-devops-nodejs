@@ -27,8 +27,8 @@ COPY . .
 FROM base AS runner
 WORKDIR /app
 
-# 👉 Instala sqlite3 aquí
-RUN apk add --no-cache sqlite
+# 👉 Instala mysql2 dependencies aquí
+RUN apk add --no-cache mysql-client
 
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs
@@ -54,7 +54,7 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 
 LABEL maintainer="Devsu Team - demo Angel"
 LABEL version="1.0.0"
-LABEL description="Node.js API with SQLite database"
+LABEL description="Node.js API with MariaDB database"
 LABEL architecture="arm64"
 
 VOLUME ["/app/data", "/app/logs"]
