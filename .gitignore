@@ -133,7 +133,7 @@ dist
 .env.staging
 infrastructure/secrets/
 .secrets
-.tfvars
+terraform.tfvars
 
 # Sqlite database files
 *.sqlite
