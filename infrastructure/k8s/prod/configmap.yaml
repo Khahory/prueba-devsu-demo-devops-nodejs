@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devsu-demo-config
+  namespace: devsu-demo-prod
+  labels:
+    app: devsu-demo
+    environment: production
+    component: config
+data:
+  NODE_ENV: "production"
+  PORT: "8000"
+  LOG_LEVEL: "warn"
+  DATABASE_NAME: "./data/test-db.sqlite"
+  FORCE_SYNC: "false" 

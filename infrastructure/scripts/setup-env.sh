@@ -41,6 +41,10 @@ SESSION_SECRET=$(generate_secret)
 # Database Sync Configuration
 FORCE_SYNC=false
 
+# AWS Configuration for Terraform
+AWS_ACCESS_KEY=<your_aws_access_key_here>
+AWS_SECRET_KEY=<your_aws_secret_key_here>
+
 # Other Configuration
 DOCKER_USERNAME=
 DOCKER_PASSWORD=

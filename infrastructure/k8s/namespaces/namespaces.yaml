@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devsu-demo-staging
+  labels:
+    name: devsu-demo-staging
+    environment: staging
+    team: devsu
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devsu-demo-prod
+  labels:
+    name: devsu-demo-prod
+    environment: production
+    team: devsu 
