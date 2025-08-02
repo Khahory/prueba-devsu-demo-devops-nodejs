@@ -23,6 +23,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
+  # Namespace mapping will be set dynamically based on environment
 
 jobs:
   deploy-eks:
@@ -33,6 +34,18 @@ jobs:
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
+
+      - name: 🔧 Set namespace
+        run: |
+          # Map environment to correct namespace name
+          if [ "${{ inputs.environment }}" = "staging" ]; then
+            echo "NAMESPACE=devsu-demo-staging" >> $GITHUB_ENV
+          elif [ "${{ inputs.environment }}" = "prod" ]; then
+            echo "NAMESPACE=devsu-demo-prod" >> $GITHUB_ENV
+          else
+            echo "NAMESPACE=devsu-demo-${{ inputs.environment }}" >> $GITHUB_ENV
+          fi
+          echo "Using namespace: $NAMESPACE"
 
       - name: 🔐 Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -67,7 +80,7 @@ jobs:
 
       - name: 📋 Create namespace if not exists
         run: |
-          kubectl create namespace devsu-demo-${{ inputs.environment }} --dry-run=client -o yaml | kubectl apply -f -
+          kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
 
       - name: 🔧 Apply Kubernetes manifests
         run: |
@@ -85,29 +98,29 @@ jobs:
       - name: 🐳 Update deployment with new image
         run: |
           # Update deployment with new image tag
-          kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ vars.DOCKER_USERNAME }}/devsu-demo:${{ inputs.image_tag }} -n devsu-demo-${{ inputs.environment }}
+          kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ vars.DOCKER_USERNAME }}/devsu-demo:${{ inputs.image_tag }} -n ${{ env.NAMESPACE }}
           
           # Force restart if requested
           if [ "${{ inputs.force_restart }}" = "true" ]; then
-            kubectl rollout restart deployment/devsu-demo-app -n devsu-demo-${{ inputs.environment }}
+            kubectl rollout restart deployment/devsu-demo-app -n ${{ env.NAMESPACE }}
           fi
 
       - name: 🔄 Wait for deployment rollout
         run: |
-          kubectl rollout status deployment/devsu-demo-app -n devsu-demo-${{ inputs.environment }} --timeout=600s
+          kubectl rollout status deployment/devsu-demo-app -n ${{ env.NAMESPACE }} --timeout=600s
 
       - name: 📊 Verify deployment
         run: |
           echo "=== Pods Status ==="
-          kubectl get pods -n devsu-demo-${{ inputs.environment }}
+          kubectl get pods -n ${{ env.NAMESPACE }}
           
           echo "=== Deployment Status ==="
-          kubectl get deployment -n devsu-demo-${{ inputs.environment }}
+          kubectl get deployment -n ${{ env.NAMESPACE }}
 
       - name: 🧪 Health check
         run: |
           # Wait for pods to be ready
-          kubectl wait --for=condition=ready pod -l app=devsu-demo -n devsu-demo-${{ inputs.environment }} --timeout=300s
+          kubectl wait --for=condition=ready pod -l app=devsu-demo -n ${{ env.NAMESPACE }} --timeout=300s
           
           echo "✅ Pods are ready"
 
@@ -116,8 +129,9 @@ jobs:
           echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "**Environment:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
           echo "**Image Tag:** ${{ inputs.image_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Namespace:** ${{ env.NAMESPACE }}" >> $GITHUB_STEP_SUMMARY
           echo "**Cluster:** ${{ env.EKS_CLUSTER_NAME }}" >> $GITHUB_STEP_SUMMARY
           echo "**Region:** ${{ env.AWS_REGION }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Pods Status:" >> $GITHUB_STEP_SUMMARY
-          kubectl get pods -n devsu-demo-${{ inputs.environment }} -o wide >> $GITHUB_STEP_SUMMARY 
+          kubectl get pods -n ${{ env.NAMESPACE }} -o wide >> $GITHUB_STEP_SUMMARY 

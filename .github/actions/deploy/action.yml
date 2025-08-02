@@ -38,6 +38,19 @@ runs:
         username: ${{ inputs.docker_username }}
         password: ${{ inputs.docker_password }}
 
+    - name: 🔧 Set namespace
+      shell: bash -leo pipefail {0}
+      run: |
+        # Map environment to correct namespace name
+        if [ "${{ inputs.environment }}" = "staging" ]; then
+          NAMESPACE="devsu-demo-staging"
+        elif [ "${{ inputs.environment }}" = "prod" ]; then
+          NAMESPACE="devsu-demo-prod"
+        else
+          NAMESPACE="devsu-demo-${{ inputs.environment }}"
+        fi
+        echo "Using namespace: $NAMESPACE"
+
     - name: 🔐 Configure AWS credentials
       shell: bash -leo pipefail {0}
       run: |
@@ -82,18 +95,18 @@ runs:
       shell: bash -leo pipefail {0}
       run: |
         # Update image tag in deployment
-        kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n devsu-demo-${{ inputs.environment }} || \
-        kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n devsu-demo-${{ inputs.environment }} || \
+        kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n $NAMESPACE || \
+        kubectl set image deployment/devsu-demo-app devsu-demo-app=${{ inputs.docker_username }}/devsu-demo:${{ inputs.version }} -n $NAMESPACE || \
         echo "Deployment not found, creating new deployment..."
 
     - name: 🔄 Wait for deployment rollout
       shell: bash -leo pipefail {0}
       run: |
-        kubectl rollout status deployment/devsu-demo-app -n devsu-demo-${{ inputs.environment }} --timeout=300s
+        kubectl rollout status deployment/devsu-demo-app -n $NAMESPACE --timeout=300s
 
     - name: 📊 Verify deployment
       shell: bash -leo pipefail {0}
       run: |
-        kubectl get pods -n devsu-demo-${{ inputs.environment }}
-        kubectl get services -n devsu-demo-${{ inputs.environment }}
-        kubectl get ingress -n devsu-demo-${{ inputs.environment }}
+        kubectl get pods -n $NAMESPACE
+        kubectl get services -n $NAMESPACE
+        kubectl get ingress -n $NAMESPACE
