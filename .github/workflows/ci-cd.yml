@@ -162,7 +162,7 @@ jobs:
       - name: 🐳 Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./infrastructure/docker
+          context: .
           file: ./infrastructure/docker/Dockerfile
           push: true
           tags: |
