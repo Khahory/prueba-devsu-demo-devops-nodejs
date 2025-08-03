@@ -10,6 +10,21 @@ A simple REST API application with MariaDB database for DevOps testing and deplo
 - kubectl (for Kubernetes)
 - Terraform (for infrastructure)
 
+### 🏗️ Terraform (Infrastructure)
+```bash
+cd infrastructure/terraform
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars with your settings
+./scripts/get-aws-resources.sh
+terraform init
+terraform login
+terraform workspace new devsu-demo-prod # Create a new workspace for production
+terraform workspace new devsu-demo-stage # Create a new workspace for staging
+terraform plan
+terraform apply
+./infrastructure/k8s/scripts/init-staging.sh to-terraform
+```
+
 ### 🐳 Local with Docker Compose
 ```bash
 ./infrastructure/scripts/setup-env.sh
@@ -30,18 +45,6 @@ npm run dev
 ./infrastructure/scripts/setup-env.sh
 ./infrastructure/k8s/scripts/init-staging.sh
 ./infrastructure/scripts/build-and-push-docker-image.sh infrastructure/docker/Dockerfile
-```
-
-### 🏗️ Terraform (Infrastructure)
-```bash
-cd infrastructure/terraform
-cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars with your settings
-./scripts/get-aws-resources.sh
-terraform init
-terraform plan
-terraform apply
-./infrastructure/k8s/scripts/init-staging.sh to-terraform
 ```
 
 ## 🧪 Testing
