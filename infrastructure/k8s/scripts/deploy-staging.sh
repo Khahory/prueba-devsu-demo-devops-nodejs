@@ -1,79 +1,85 @@
 #!/bin/bash
 
-# Script to deploy the application in staging environment
-set -e
+set -euo pipefail
 
-echo "🚀 Deploying application in staging environment..."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$(dirname "$(dirname "$SCRIPT_DIR")")")"
 
-# Check if kubectl is available
-if ! command -v kubectl &> /dev/null; then
-    echo "❌ Error: kubectl is not installed"
+cd "$PROJECT_ROOT"
+
+if [[ ! -f .env ]]; then
+    echo "Error: .env file not found in $PROJECT_ROOT"
+    echo "Please create .env file based on env.example"
     exit 1
 fi
 
-# Check if Minikube is running
-if ! minikube status | grep -q "Running"; then
-    echo "⚠️  Minikube is not running. Starting Minikube..."
-    minikube start
-fi
+set -a
+source .env
+set +a
 
-# Enable ingress addon
-echo "📦 Enabling ingress addon..."
-minikube addons enable ingress
+REQUIRED_VARS=(
+    "MYSQL_ROOT_PASSWORD"
+    "MYSQL_USER"
+    "MYSQL_PASSWORD"
+    "DATABASE_USER"
+    "DATABASE_PASSWORD"
+    "JWT_SECRET"
+    "SESSION_SECRET"
+)
 
-# Create namespace if it doesn't exist
-echo "🏗️  Creating namespace devsu-demo-staging..."
-kubectl apply -f ../namespaces/namespaces.yaml
+for var in "${REQUIRED_VARS[@]}"; do
+    if [[ -z "${!var:-}" ]]; then
+        echo "Error: Required environment variable $var is not set"
+        exit 1
+    fi
+done
 
-# Apply PersistentVolumeClaim
-echo "💾 Applying PersistentVolumeClaim..."
-kubectl apply -f persistent-volume-claim.yaml
+TEMP_DIR=$(mktemp -d)
+trap 'rm -rf "$TEMP_DIR"' EXIT
 
-# Apply ConfigMap and Secret
-echo "🔧 Applying ConfigMap and Secret..."
-kubectl apply -f configmap.yaml
-kubectl apply -f secret.yaml
+cat > "$TEMP_DIR/mariadb-secret.yaml" << EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mariadb-secrets
+  namespace: devsu-demo-staging
+  labels:
+    app: mariadb
+    environment: staging
+    component: database
+type: Opaque
+data:
+  MYSQL_ROOT_PASSWORD: $(echo -n "$MYSQL_ROOT_PASSWORD" | base64)
+  MYSQL_USER: $(echo -n "$MYSQL_USER" | base64)
+  MYSQL_PASSWORD: $(echo -n "$MYSQL_PASSWORD" | base64)
+EOF
 
-# Apply Deployment
-echo "📦 Applying Deployment..."
-kubectl apply -f deployment.yaml
+cat > "$TEMP_DIR/secret.yaml" << EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: devsu-demo-secrets
+  namespace: devsu-demo-staging
+  labels:
+    app: devsu-demo
+    environment: staging
+    component: secrets
+type: Opaque
+data:
+  DATABASE_USER: $(echo -n "$DATABASE_USER" | base64)
+  DATABASE_PASSWORD: $(echo -n "$DATABASE_PASSWORD" | base64)
+  JWT_SECRET: $(echo -n "$JWT_SECRET" | base64)
+  SESSION_SECRET: $(echo -n "$SESSION_SECRET" | base64)
+EOF
 
-# Apply Service
-echo "🌐 Applying Service..."
-kubectl apply -f service.yaml
+kubectl apply -f infrastructure/k8s/namespaces/namespaces.yaml
 
-# Apply Ingress
-echo "🚪 Applying Ingress..."
-kubectl apply -f ingress.yaml
-
-# Apply HPA
-echo "⚖️  Applying HorizontalPodAutoscaler..."
-kubectl apply -f hpa.yaml
-
-# Wait for pods to be ready
-echo "⏳ Waiting for pods to be ready..."
-kubectl wait --for=condition=ready pod -l app=devsu-demo -l environment=staging --timeout=300s
-
-# Show deployment information
-echo "✅ Deployment completed!"
-echo ""
-echo "📊 Deployment status:"
-kubectl get pods -n devsu-demo-staging
-echo ""
-echo "🌐 Services:"
-kubectl get services -n devsu-demo-staging
-echo ""
-echo "🚪 Ingress:"
-kubectl get ingress -n devsu-demo-staging
-echo ""
-echo "⚖️  HPA:"
-kubectl get hpa -n devsu-demo-staging
-echo ""
-echo "🔗 To access the application:"
-echo "   - Add 'devsu-demo-staging.local' to your /etc/hosts file"
-echo "   - URL: http://devsu-demo-staging.local"
-echo ""
-echo "📝 Useful commands:"
-echo "   - View logs: kubectl logs -f deployment/devsu-demo-app -n devsu-demo-staging"
-echo "   - View pods: kubectl get pods -n devsu-demo-staging"
-echo "   - View services: kubectl get services -n devsu-demo-staging" 
+kubectl apply -f infrastructure/k8s/staging/configmap.yaml
+kubectl apply -f infrastructure/k8s/staging/hpa.yaml
+kubectl apply -f infrastructure/k8s/staging/ingress.yaml
+kubectl apply -f infrastructure/k8s/staging/mariadb-configmap.yaml
+kubectl apply -f infrastructure/k8s/staging/mariadb-deployment.yaml
+kubectl apply -f "$TEMP_DIR/mariadb-secret.yaml"
+kubectl apply -f infrastructure/k8s/staging/mariadb-service.yaml
+kubectl apply -f "$TEMP_DIR/secret.yaml"
+kubectl apply -f infrastructure/k8s/staging/service.yaml 
