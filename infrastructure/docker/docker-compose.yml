@@ -12,6 +12,12 @@ services:
       MARIADB_DATABASE: ${DATABASE_NAME}
       MARIADB_USER: ${DATABASE_USER}
       MARIADB_PASSWORD: ${DATABASE_PASSWORD}
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 30s
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - "${DATABASE_PORT:-3306}:3306"
     volumes:
@@ -22,7 +28,8 @@ services:
 
   app-dev:
     depends_on:
-      - mariadb-dev
+      mariadb-dev:
+        condition: service_healthy
     build:
       context: ../..
       dockerfile: infrastructure/docker/Dockerfile.dev

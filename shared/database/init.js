@@ -2,6 +2,43 @@ import sequelize from './database.js';
 import User from '../../users/model.js';
 
 /**
+ * Wait for a specified amount of time
+ * @param {number} ms - milliseconds to wait
+ * @returns {Promise}
+ */
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Retry database connection with exponential backoff
+ * @param {number} maxRetries - maximum number of retries
+ * @param {number} baseDelay - base delay in milliseconds
+ * @returns {Promise<boolean>}
+ */
+export async function retryDatabaseConnection(maxRetries = 10, baseDelay = 1000) {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            console.log(`🔄 Attempting database connection (attempt ${attempt}/${maxRetries})...`);
+            await sequelize.authenticate();
+            console.log('✅ Database connection established successfully');
+            return true;
+        } catch (error) {
+            console.log(`❌ Connection attempt ${attempt} failed: ${error.message}`);
+            
+            if (attempt === maxRetries) {
+                console.error('❌ Max retries reached. Unable to connect to database.');
+                throw error;
+            }
+            
+            const delay = baseDelay * Math.pow(2, attempt - 1);
+            console.log(`⏳ Waiting ${delay}ms before next attempt...`);
+            await wait(delay);
+        }
+    }
+}
+
+/**
  * Initialize database tables
  * This function will create all necessary tables if they don't exist
  */

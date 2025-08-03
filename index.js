@@ -3,7 +3,7 @@ import { usersRouter } from './users/router.js';
 import express from 'express';
 import * as dotenv from 'dotenv';
 import User from './users/model.js';
-import { initializeDatabase, checkDatabaseConnection } from './shared/database/init.js';
+import { initializeDatabase, checkDatabaseConnection, retryDatabaseConnection } from './shared/database/init.js';
 
 // Load environment variables
 dotenv.config();
@@ -36,8 +36,8 @@ console.log(`${logPrefix} FORCE_SYNC: ${shouldForceSync}`);
 // Initialize database with proper error handling
 async function initializeApp() {
     try {
-        // Check database connection first
-        await checkDatabaseConnection();
+        // Retry database connection with exponential backoff
+        await retryDatabaseConnection();
 
         // Initialize database tables
         if (shouldForceSync) {
@@ -61,6 +61,7 @@ async function initializeApp() {
         return { app, server };
     } catch (error) {
         console.error(`${logPrefix} ❌ Failed to initialize application:`, error);
+        process.exit(1);
     }
 }
 
