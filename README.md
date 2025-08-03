@@ -48,8 +48,8 @@ cd infrastructure/terraform
 cp terraform.tfvars.example terraform.tfvars
 # Edit terraform.tfvars with your settings
 ./scripts/get-aws-resources.sh # Fetch AWS resources and save to terraform.tfvars
-terraform init
 terraform login
+terraform init # when prompted, enter 'devsu-demo-prod' or 'devsu-demo-stage' as the workspace name
 terraform workspace new devsu-demo-prod # Create a new workspace for production
 terraform workspace new devsu-demo-stage # Create a new workspace for staging
 terraform plan
