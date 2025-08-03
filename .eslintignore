@@ -20,6 +20,8 @@ coverage/
 logs/
 *.log
 
+*.backup
+
 # Runtime data
 pids/
 *.pid

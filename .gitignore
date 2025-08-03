@@ -133,6 +133,7 @@ dist
 .env.staging
 infrastructure/secrets/
 .secrets
+*.backup
 
 # Terraform files
 terraform.tfvars

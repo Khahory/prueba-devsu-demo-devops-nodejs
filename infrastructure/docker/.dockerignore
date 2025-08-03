@@ -123,4 +123,6 @@ tests/
 .github/
 .gitlab-ci.yml
 .travis.yml
-.circleci/ 
+.circleci/
+
+*.backup
