@@ -27,13 +27,13 @@ echo -e "${GREEN}Creating .env file for production...${NC}"
 cat > .env << EOF
 # Database Configuration
 DATABASE_USER=admin
-DATABASE_PASSWORD=$(generate_secret)
+DATABASE_PASSWORD=dev_password_123
 DATABASE_HOST=localhost
 DATABASE_PORT=3306
 DATABASE_NAME=devsu_demo
 
 # Application Configuration
-PORT=8000
+PORT=8001
 LOG_LEVEL=info
 
 # Security Configuration
