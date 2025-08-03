@@ -1,0 +1,27 @@
+# ===== AWS ACCOUNT SPECIFIC VARIABLES EXAMPLE =====
+# Copy this file to terraform.tfvars and update with your AWS account values
+# These variables depend on your AWS account and need to be updated
+# with the correct values from your account
+
+# VPC Configuration
+# Replace with your VPC ID
+vpc_id = "vpc-your-vpc-id-here"
+
+# Subnet Configuration (at least 2 subnets in different AZs recommended)
+# Replace with your subnet IDs
+subnet_ids = [
+  "subnet-your-subnet-1-here",
+  "subnet-your-subnet-2-here"
+]
+
+# Node Group Configuration
+instance_type = "t4g.medium"
+desired_size = 1
+max_size = 2
+min_size = 1
+
+# EKS Version
+eks_version = "1.33"
+
+# Environment (will be set by terraform workspace)
+# environment = "stage" or "production" 

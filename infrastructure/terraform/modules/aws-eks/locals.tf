@@ -10,25 +10,15 @@ locals {
 
   eks_version = var.eks_version
 
-  # VPC and Subnet configuration based on environment
-  vpc_id = var.vpc_id != null ? var.vpc_id : (
-    var.environment == "stage"
-    ? "vpc-08d0bf1a6fd73939b" # vpc:network-stage
-    : "vpc-08d0bf1a6fd73939b" # vpc:network-production
-  )
+  # VPC and Subnet configuration from variables
+  vpc_id     = var.vpc_id
+  subnet_ids = var.subnet_ids
 
-  subnet_ids = var.subnet_ids != null ? var.subnet_ids : (
-    var.environment == "stage"
-    ? ["subnet-03ccebed1bcc736d0", "subnet-0e636cdba3c2dbce2"] # public subnets for stage
-    : ["subnet-03ccebed1bcc736d0", "subnet-0e636cdba3c2dbce2"] # public subnets for production
-  )
-
-  # Node group configuration
-  instance_type = var.environment == "stage" ? "t4g.medium" : "t4g.medium"
-
-  desired_size = var.desired_size != null ? var.desired_size : 1
-  max_size     = var.max_size != null ? var.max_size : 2
-  min_size     = var.min_size != null ? var.min_size : 1
+  # Node group configuration from variables
+  instance_type = var.instance_type
+  desired_size  = var.desired_size
+  max_size      = var.max_size
+  min_size      = var.min_size
 }
 
 # ===== TAGS CONFIGURATION =====
