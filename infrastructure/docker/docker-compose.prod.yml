@@ -59,6 +59,7 @@ networks:
   app-network:
     driver: bridge
 
+# TODO: before deploying to production, ensure that the secrets are created (setup-secrets.sh)
 secrets:
   db_password:
     file: secrets/db_password.txt

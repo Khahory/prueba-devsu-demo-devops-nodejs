@@ -45,14 +45,13 @@ FORCE_SYNC=false
 AWS_ACCESS_KEY=<your_aws_access_key_here>
 AWS_SECRET_KEY=<your_aws_secret_key_here>
 
+# External Services
+# DATABASE_URL=localhost:3306
+
 # Other Configuration
 DOCKER_USERNAME=
 DOCKER_PASSWORD=
 SNYK_TOKEN=
-
-# External Services (if needed)
-# API_KEY=your_api_key_here
-# DATABASE_URL=your_database_url_here
 EOF
 
 # Check if .env.dev file exists
@@ -80,9 +79,17 @@ SESSION_SECRET=dev_session_secret_change_in_production
 # Database Sync Configuration
 FORCE_SYNC=false
 
-# External Services (if needed)
-# API_KEY=your_dev_api_key_here
-# DATABASE_URL=your_dev_database_url_here
+# AWS Configuration for Terraform
+AWS_ACCESS_KEY=<your_aws_access_key_here>
+AWS_SECRET_KEY=<your_aws_secret_key_here>
+
+# External Services
+# DATABASE_URL=localhost:3306
+
+# Other Configuration
+DOCKER_USERNAME=
+DOCKER_PASSWORD=
+SNYK_TOKEN=
 EOF
 
 # Check if .env.staging file exists
@@ -111,9 +118,17 @@ SESSION_SECRET=staging_session_secret_change_in_production
 # Database Sync Configuration
 FORCE_SYNC=false
 
-# External Services (if needed)
-# API_KEY=your_staging_api_key_here
-# DATABASE_URL=your_staging_database_url_here
+# AWS Configuration for Terraform
+AWS_ACCESS_KEY=<your_aws_access_key_here>
+AWS_SECRET_KEY=<your_aws_secret_key_here>
+
+# External Services
+# DATABASE_URL=localhost:3306
+
+# Other Configuration
+DOCKER_USERNAME=
+DOCKER_PASSWORD=
+SNYK_TOKEN=
 EOF
 
 echo -e "${GREEN}✅ Environment files created successfully!${NC}"
