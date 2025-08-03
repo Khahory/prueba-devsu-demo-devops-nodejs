@@ -118,10 +118,6 @@ show_update_instructions() {
     echo "   vpc_id = \"vpc-your-vpc-id-here\""
     echo "   subnet_ids = [\"subnet-your-subnet-1\", \"subnet-your-subnet-2\"]"
     echo
-    
-    print_message $YELLOW "4. After updating, run the validation script:"
-    echo "   ./validate-aws-variables.sh"
-    echo
 }
 
 main() {
