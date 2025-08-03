@@ -1,48 +1,67 @@
-# Demo Devops NodeJs
+# Demo DevOps Node.js
 
-This is a simple application to be used in the technical test of DevOps.
+A simple REST API application with MariaDB database for DevOps testing and deployment practices.
 
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-
 - Node.js 18.15.0
+- Docker & Docker Compose
+- kubectl (for Kubernetes)
+- Terraform (for infrastructure)
 
-### Installation
-
-Clone this repo.
-
+### 🐳 Local with Docker Compose
 ```bash
-git clone https://bitbucket.org/devsu/demo-devops-nodejs.git
+./infrastructure/scripts/setup-env.sh
+cp ./.env.dev infrastructure/docker/.env
+docker compose -f infrastructure/docker/docker-compose.yml up -d
 ```
 
-Install dependencies.
-
+### 🏗️ Local with Docker Container
 ```bash
-npm i
+./infrastructure/scripts/setup-env.sh
+npm install
+docker compose -f infrastructure/docker/docker-compose.yml up -d  # MariaDB only
+npm run dev
 ```
 
-### Database
-
-The database is generated as a file in the main path when the project is first run, and its name is `dev.sqlite`.
-
-Consider giving access permissions to the file for proper functioning.
-
-## Usage
-
-To run tests you can use this command.
-
+### ☸️ Kubernetes (Staging)
 ```bash
-npm run test
+./infrastructure/scripts/setup-env.sh
+./infrastructure/k8s/scripts/init-staging.sh
+./infrastructure/scripts/build-and-push-docker-image.sh infrastructure/docker/Dockerfile
 ```
 
-To run locally the project you can use this command.
-
+### 🏗️ Terraform (Infrastructure)
 ```bash
-npm run start
+cd infrastructure/terraform
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars with your settings
+./scripts/get-aws-resources.sh
+terraform init
+terraform plan
+terraform apply
+./infrastructure/k8s/scripts/init-staging.sh to-terraform
 ```
 
-Open http://localhost:8000/api/users with your browser to see the result.
+## 🧪 Testing
+
+```bash
+npm run test              # Unit tests
+npm run test:coverage     # Tests with coverage
+npm run lint             # Code linting
+```
+
+## 🗄️ Database
+
+Uses **MariaDB** database. To connect and query:
+
+```bash
+mariadb -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE"
+select * from users;
+```
+
+Access the API at: `http://localhost:8000/api/users`
 
 ### Features
 
@@ -137,7 +156,36 @@ If the response is unsuccessful, we will receive status 400 and the following me
 }
 ```
 
+## 🔄 CI/CD Pipeline
+
+The project includes automated GitHub Actions workflows:
+
+- **CI/CD Pipeline**: Automatic build, test, and deployment to staging on `main` push
+- **Production Deployment**: Manual deployment with confirmation required
+- **Multi-architecture**: Docker images built for AMD64 and ARM64
+
+## 🛠️ Tech Stack
+
+- **Runtime**: Node.js 18 with Express
+- **Database**: MariaDB
+- **Testing**: Jest with mocks
+- **Infrastructure**: Terraform + AWS EKS
+- **Containerization**: Docker with multi-stage builds
+- **Orchestration**: Kubernetes with auto-scaling
+
+## 📁 Project Structure
+
+```
+├── infrastructure/
+│   ├── docker/          # Docker configuration
+│   ├── k8s/            # Kubernetes manifests
+│   ├── terraform/      # Infrastructure as Code
+│   └── scripts/        # Automation scripts
+├── users/              # User API endpoints
+├── shared/             # Database & middleware
+└── .github/workflows/  # CI/CD pipelines
+```
+
 ## License
 
 Copyright © 2023 Devsu. All rights reserved.
-# prueba-devsu-demo-devops-nodejs
