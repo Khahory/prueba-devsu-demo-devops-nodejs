@@ -47,9 +47,6 @@ spec:
             secretKeyRef:
               name: mariadb-secrets
               key: MYSQL_PASSWORD
-        volumeMounts:
-        - name: mariadb-data
-          mountPath: /var/lib/mysql
         resources:
           requests:
             memory: "256Mi"
@@ -81,7 +78,3 @@ spec:
             - -p$(MYSQL_ROOT_PASSWORD)
           initialDelaySeconds: 5
           periodSeconds: 5
-      volumes:
-      - name: mariadb-data
-        persistentVolumeClaim:
-          claimName: mariadb-pvc 
