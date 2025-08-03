@@ -30,7 +30,7 @@ npm run dev
 cd infrastructure/terraform
 cp terraform.tfvars.example terraform.tfvars
 # Edit terraform.tfvars with your settings
-./scripts/get-aws-resources.sh
+./scripts/get-aws-resources.sh # Fetch AWS resources and save to terraform.tfvars
 terraform init
 terraform login
 terraform workspace new devsu-demo-prod # Create a new workspace for production
