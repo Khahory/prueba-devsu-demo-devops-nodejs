@@ -28,7 +28,9 @@ cat > .env << EOF
 # Database Configuration
 DATABASE_USER=admin
 DATABASE_PASSWORD=$(generate_secret)
-DATABASE_NAME=./data/test-db.sqlite
+DATABASE_HOST=localhost
+DATABASE_PORT=3306
+DATABASE_NAME=devsu_demo
 
 # Application Configuration
 PORT=8000
@@ -66,7 +68,9 @@ cat > .env.dev << EOF
 # Database Configuration (Development)
 DATABASE_USER=admin
 DATABASE_PASSWORD=dev_password_123
-DATABASE_NAME=./data/test-db.sqlite
+DATABASE_HOST=localhost
+DATABASE_PORT=3306
+DATABASE_NAME=devsu_demo
 
 # Application Configuration
 PORT=8000
@@ -104,7 +108,9 @@ cat > .env.staging << EOF
 # Database Configuration (Staging)
 DATABASE_USER=admin
 DATABASE_PASSWORD=staging_password_123
-DATABASE_NAME=./data/staging-db.sqlite
+DATABASE_HOST=localhost
+DATABASE_PORT=3306
+DATABASE_NAME=devsu_demo
 
 # Application Configuration
 PORT=8000
