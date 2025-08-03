@@ -96,9 +96,15 @@ jobs:
 
       - name: 🚀 Deploy to staging
         run: |
+          # Use the SHA short format (7 chars) to match Docker Hub tags
+          SHORT_SHA=${GITHUB_SHA:0:7}
+          IMAGE_TAG="main-${SHORT_SHA}"
+          
+          echo "Deploying image: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG}"
+          
           # Update image in deployment
           kubectl set image deployment/devsu-demo-app \
-            devsu-demo-app=${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:main-${{ github.sha }} \
+            devsu-demo-app=${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG} \
             -n devsu-demo-staging
           
           # Wait for rollout
