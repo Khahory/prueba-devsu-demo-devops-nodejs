@@ -59,4 +59,5 @@ LABEL architecture="arm64"
 
 VOLUME ["/app/data", "/app/logs"]
 
-ENTRYPOINT ["node", "index.js"]
+# Initialize database and start application
+CMD node scripts/init-database.js && node index.js

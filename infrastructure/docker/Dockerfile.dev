@@ -43,6 +43,5 @@ LABEL description="Node.js API Development Environment"
 LABEL stage="development"
 LABEL architecture="arm64"
 
-# Use nodemon for hot reload in development
-CMD ["nodemon", "--legacy-watch", "index.js"]
-#CMD ["tail", "-f", "/dev/null"]
+# Initialize database and start development server
+CMD node scripts/init-database.js && nodemon --legacy-watch index.js
