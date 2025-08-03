@@ -60,4 +60,4 @@ LABEL architecture="arm64"
 VOLUME ["/app/data", "/app/logs"]
 
 # Initialize database and start application
-CMD node scripts/init-database.js && node index.js
+CMD node scripts/wait-for-db.js && scripts/init-database.js && node index.js
