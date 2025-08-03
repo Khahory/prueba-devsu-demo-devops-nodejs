@@ -13,6 +13,7 @@ A simple REST API application with MariaDB database for DevOps testing and deplo
 
 ### 🐳 Local with Docker Compose
 ```bash
+docker compose -f infrastructure/docker/docker-compose.yml down # Stop and remove existing containers
 docker compose -f infrastructure/docker/docker-compose-mariadb.yml down # Stop and remove existing containers
 ./infrastructure/scripts/setup-env.sh # Generate random secrets
 cp ./.env.dev infrastructure/docker/.env
@@ -23,6 +24,7 @@ Access the health check at: [http://localhost:8000/health](http://localhost:8000
 
 ### 🏗️ Local API and Docker Container for MariaDB
 ```bash
+docker compose -f infrastructure/docker/docker-compose.yml down # Stop and remove existing containers
 docker compose -f infrastructure/docker/docker-compose-mariadb.yml down # Stop and remove existing containers
 ./infrastructure/scripts/setup-env.sh # Generate random secrets
 cp ./.env infrastructure/docker/.env
