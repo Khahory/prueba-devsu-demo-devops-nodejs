@@ -5,6 +5,8 @@ services:
     platform: linux/arm64
     container_name: devsu-mariadb-dev
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       MARIADB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
       MARIADB_DATABASE: ${DATABASE_NAME}
@@ -29,6 +31,8 @@ services:
     container_name: devsu-nodejs-api-dev
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     environment:
       - NODE_ENV=development
       - DATABASE_HOST=mariadb-dev
