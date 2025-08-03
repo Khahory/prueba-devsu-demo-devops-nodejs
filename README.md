@@ -50,11 +50,18 @@ cp terraform.tfvars.example terraform.tfvars
 ./scripts/get-aws-resources.sh # Fetch AWS resources and save to terraform.tfvars
 terraform login
 terraform init # when prompted, enter 'devsu-demo-prod' or 'devsu-demo-stage' as the workspace name
-terraform workspace new devsu-demo-prod # Create a new workspace for production
+
+# STAGING
 terraform workspace new devsu-demo-stage # Create a new workspace for staging
 terraform plan
 terraform apply
-./infrastructure/k8s/scripts/init-staging.sh to-terraform
+./infrastructure/k8s/scripts/init-staging.sh to-terraform # Initialize staging environment
+
+# PRODUCTION
+terraform workspace new devsu-demo-prod # Create a new workspace for production
+terraform plan
+terraform apply
+./infrastructure/k8s/scripts/init-prod.sh to-terraform # Initialize production environment
 ```
 
 ### ☸️ Kubernetes (Staging)
