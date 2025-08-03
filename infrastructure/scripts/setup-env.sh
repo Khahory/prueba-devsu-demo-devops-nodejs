@@ -9,6 +9,14 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# Check if running with to-terraform parameter
+TO_TERRAFORM=false
+if [[ "${1:-}" == "to-terraform" ]]; then
+    TO_TERRAFORM=true
+    echo -e "${YELLOW}Running in Terraform mode...${NC}"
+    echo -e "${YELLOW}Creating both .env and .env.terraform for EKS deployment...${NC}"
+fi
+
 echo -e "${YELLOW}Setting up environment variables...${NC}"
 
 # Function to generate secure random string
@@ -61,6 +69,19 @@ DOCKER_USERNAME=khakharis
 DOCKER_PASSWORD=
 SNYK_TOKEN=
 EOF
+
+# If running in Terraform mode, also create .env.terraform
+if [[ "$TO_TERRAFORM" == "true" ]]; then
+    # Check if .env.terraform file exists
+    if [ -f ".env.terraform" ]; then
+        echo -e "${YELLOW}Warning: .env.terraform file already exists. Backing up to .env.terraform.backup${NC}"
+        cp .env.terraform .env.terraform.backup
+    fi
+
+    # Create .env.terraform file (copy of .env)
+    echo -e "${GREEN}Creating .env.terraform file for EKS deployment...${NC}"
+    cp .env .env.terraform
+fi
 
 # Check if .env.dev file exists
 if [ -f ".env.dev" ]; then
@@ -155,20 +176,30 @@ DOCKER_PASSWORD=
 SNYK_TOKEN=
 EOF
 
-echo -e "${GREEN}✅ Environment files created successfully!${NC}"
-echo -e "${YELLOW}Important security notes:${NC}"
-echo -e "  - .env files are in .gitignore and .dockerignore"
-echo -e "  - Never commit .env files to version control"
-echo -e "  - Use strong, unique secrets in production"
-echo -e "  - Consider using Docker secrets or Kubernetes secrets for production"
-echo -e ""
-echo -e "${GREEN}Files created:${NC}"
-echo -e "  - .env (production)"
-echo -e "  - .env.dev (development)"
-echo -e "  - .env.staging (staging)"
-echo -e ""
-echo -e "${GREEN}📊 Database Initialization:${NC}"
-echo -e "  - The application will automatically create the 'users' table on first startup"
-echo -e "  - To manually initialize the database, run: node scripts/init-database.js"
-echo -e "  - To force recreate all tables, run: node scripts/init-database.js --force"
-echo -e "  - Set FORCE_SYNC=true in your .env file to force sync on every startup"
+if [[ "$TO_TERRAFORM" == "true" ]]; then
+    echo -e "${GREEN}✅ Environment files created successfully for Terraform deployment!${NC}"
+    echo -e "${YELLOW}Note: Running in Terraform mode - both .env and .env.terraform are ready${NC}"
+    echo -e "${GREEN}Files created:${NC}"
+    echo -e "  - .env (production)"
+    echo -e "  - .env.terraform (for EKS deployment)"
+    echo -e "  - .env.dev (development)"
+    echo -e "  - .env.staging (staging)"
+else
+    echo -e "${GREEN}✅ Environment files created successfully!${NC}"
+    echo -e "${YELLOW}Important security notes:${NC}"
+    echo -e "  - .env files are in .gitignore and .dockerignore"
+    echo -e "  - Never commit .env files to version control"
+    echo -e "  - Use strong, unique secrets in production"
+    echo -e "  - Consider using Docker secrets or Kubernetes secrets for production"
+    echo -e ""
+    echo -e "${GREEN}Files created:${NC}"
+    echo -e "  - .env (production)"
+    echo -e "  - .env.dev (development)"
+    echo -e "  - .env.staging (staging)"
+    echo -e ""
+    echo -e "${GREEN}📊 Database Initialization:${NC}"
+    echo -e "  - The application will automatically create the 'users' table on first startup"
+    echo -e "  - To manually initialize the database, run: node scripts/init-database.js"
+    echo -e "  - To force recreate all tables, run: node scripts/init-database.js --force"
+    echo -e "  - Set FORCE_SYNC=true in your .env file to force sync on every startup"
+fi

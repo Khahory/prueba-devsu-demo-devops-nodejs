@@ -7,14 +7,29 @@ PROJECT_ROOT="$(dirname "$(dirname "$(dirname "$SCRIPT_DIR")")")"
 
 cd "$PROJECT_ROOT"
 
-if [[ ! -f .env ]]; then
-    echo "Error: .env file not found in $PROJECT_ROOT"
-    echo "Please create .env file based on env.example"
+# Check if running with to-terraform parameter
+TO_TERRAFORM=false
+ENV_FILE=".env"
+if [[ "${1:-}" == "to-terraform" ]]; then
+    TO_TERRAFORM=true
+    ENV_FILE=".env.terraform"
+    echo "Running in Terraform mode..."
+    echo "Will use $ENV_FILE for EKS deployment..."
+    
+    # Execute setup-env.sh with to-terraform parameter
+    echo "Setting up environment variables for Terraform deployment..."
+    bash infrastructure/scripts/setup-env.sh to-terraform
+fi
+
+if [[ ! -f "$ENV_FILE" ]]; then
+    echo "Error: $ENV_FILE file not found in $PROJECT_ROOT"
+    echo "Please create $ENV_FILE file based on env.example"
+    echo "Or run: bash infrastructure/scripts/setup-env.sh"
     exit 1
 fi
 
 set -a
-source .env
+source "$ENV_FILE"
 set +a
 
 REQUIRED_VARS=(
@@ -81,4 +96,11 @@ kubectl apply -f infrastructure/k8s/staging/mariadb-deployment.yaml
 kubectl apply -f "$TEMP_DIR/mariadb-secret.yaml"
 kubectl apply -f infrastructure/k8s/staging/mariadb-service.yaml
 kubectl apply -f "$TEMP_DIR/secret.yaml"
-kubectl apply -f infrastructure/k8s/staging/service.yaml 
+kubectl apply -f infrastructure/k8s/staging/service.yaml
+
+if [[ "$TO_TERRAFORM" == "true" ]]; then
+    echo "✅ Kubernetes resources initialized successfully for Terraform deployment!"
+    echo "Note: This was executed after Terraform infrastructure creation using $ENV_FILE"
+else
+    echo "✅ Kubernetes resources initialized successfully!"
+fi 

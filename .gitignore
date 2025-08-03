@@ -131,6 +131,7 @@ dist
 .env.dev
 .env.prod
 .env.staging
+.env.terraform
 infrastructure/secrets/
 .secrets
 *.backup
