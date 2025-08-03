@@ -1,57 +1,71 @@
 #!/bin/bash
 
-# Setup Docker secrets script for production
+# Script to setup Docker secrets for production
+# This script creates the necessary secret files for production deployment
+
 set -e
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
-
-echo -e "${YELLOW}Setting up Docker secrets for production...${NC}"
+echo "🔐 Setting up Docker secrets for production..."
 
 # Function to generate secure random string
 generate_secret() {
     openssl rand -base64 32 2>/dev/null || head -c 32 /dev/urandom | base64
 }
 
+# Function to create secret file
+create_secret_file() {
+    local secret_name=$1
+    local secret_value=$2
+    local secret_file="secrets/${secret_name}.txt"
+    
+    # Create secrets directory if it doesn't exist
+    mkdir -p secrets
+    
+    if [ -f "$secret_file" ]; then
+        echo "⚠️  Secret file $secret_file already exists. Skipping..."
+        return
+    fi
+    
+    echo "$secret_value" > "$secret_file"
+    chmod 600 "$secret_file"
+    echo "✅ Created $secret_file"
+}
+
+# Change to infrastructure/docker directory
+cd "$(dirname "$0")/../docker"
+
 # Create secrets directory
 mkdir -p secrets
 
-# Generate secrets
-echo -e "${GREEN}Generating secure secrets...${NC}"
+echo "📁 Setting up secrets in $(pwd)/secrets..."
+
+# Generate and create secret files
+echo "🔑 Generating secure secrets..."
 
 # Database password
-echo "$(generate_secret)" > secrets/db_password.txt
-chmod 600 secrets/db_password.txt
+DB_PASSWORD=$(generate_secret)
+create_secret_file "db_password" "$DB_PASSWORD"
 
 # JWT secret
-echo "$(generate_secret)" > secrets/jwt_secret.txt
-chmod 600 secrets/jwt_secret.txt
+JWT_SECRET=$(generate_secret)
+create_secret_file "jwt_secret" "$JWT_SECRET"
 
 # Session secret
-echo "$(generate_secret)" > secrets/session_secret.txt
-chmod 600 secrets/session_secret.txt
+SESSION_SECRET=$(generate_secret)
+create_secret_file "session_secret" "$SESSION_SECRET"
 
-echo -e "${GREEN}✅ Docker secrets created successfully!${NC}"
-echo -e "${YELLOW}Important security notes:${NC}"
-echo -e "  - Secrets are stored in ./secrets/ directory"
-echo -e "  - Files have 600 permissions (owner read/write only)"
-echo -e "  - Add ./secrets/ to .gitignore"
-echo -e "  - Use different secrets for each environment"
-echo -e "  - Rotate secrets regularly in production"
-echo -e ""
-echo -e "${GREEN}Files created:${NC}"
-echo -e "  - secrets/db_password.txt"
-echo -e "  - secrets/jwt_secret.txt"
-echo -e "  - secrets/session_secret.txt"
-echo -e ""
-echo -e "${YELLOW}To use with Docker Compose:${NC}"
-echo -e "  docker-compose -f docker-compose.prod.yml up -d"
-echo -e ""
-echo -e "${YELLOW}For Kubernetes:${NC}"
-echo -e "  kubectl create secret generic app-secrets \\"
-echo -e "    --from-file=db_password=secrets/db_password.txt \\"
-echo -e "    --from-file=jwt_secret=secrets/jwt_secret.txt \\"
-echo -e "    --from-file=session_secret=secrets/session_secret.txt" 
+echo ""
+echo "🎉 Docker secrets setup complete!"
+echo ""
+echo "📝 Created secret files:"
+echo "   - secrets/db_password.txt"
+echo "   - secrets/jwt_secret.txt"
+echo "   - secrets/session_secret.txt"
+echo ""
+echo "🔒 Security notes:"
+echo "   - Secret files have 600 permissions (owner read/write only)"
+echo "   - Never commit secret files to version control"
+echo "   - Add 'secrets/' to .gitignore if not already there"
+echo ""
+echo "🚀 Ready for production deployment:"
+echo "   docker-compose -f docker-compose.prod.yml up -d" 

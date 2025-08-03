@@ -1,6 +1,33 @@
 version: '3.8'
 
 services:
+  # MariaDB Database for Development
+  mariadb-dev:
+    image: mariadb:11.8
+    platform: linux/arm64
+    container_name: devsu-mariadb-dev
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MARIADB_DATABASE: ${DATABASE_NAME}
+      MARIADB_USER: ${DATABASE_USER}
+      MARIADB_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "${DATABASE_PORT:-3306}:3306"
+    env_file:
+      - ../../.env.dev
+    volumes:
+      - mariadb_data_dev:/var/lib/mysql
+      - mariadb_logs_dev:/var/log/mysql
+    networks:
+      - app-network-dev
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DATABASE_PASSWORD}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
   app-dev:
     build:
       context: ../..
@@ -13,19 +40,27 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - .env.dev
+      - ../../.env.dev
     environment:
       - NODE_ENV=development
+      - DATABASE_HOST=mariadb-dev
     volumes:
       - .:/app
       - /app/node_modules
       - app_data_dev:/app/data
       - app_logs_dev:/app/logs
     restart: unless-stopped
+    depends_on:
+      mariadb-dev:
+        condition: service_healthy
     networks:
       - app-network-dev
 
 volumes:
+  mariadb_data_dev:
+    driver: local
+  mariadb_logs_dev:
+    driver: local
   app_data_dev:
     driver: local
   app_logs_dev:

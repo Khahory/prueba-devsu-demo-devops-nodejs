@@ -388,10 +388,6 @@ Setup environment variables securely:
 ```bash
 # Generate secure environment files
 ./infrastructure/scripts/setup-env.sh
-
-# Or manually create .env files based on examples:
-cp infrastructure/env/env.example .env
-cp infrastructure/env/env.dev.example .env.dev
 ```
 
 **Security Features:**
