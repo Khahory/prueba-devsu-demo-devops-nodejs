@@ -4,6 +4,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$(dirname "$SCRIPT_DIR")")"
+DOCKERFILE_PATH=${1:-Dockerfile}
 
 cd "$PROJECT_ROOT"
 
@@ -18,10 +19,11 @@ source .env
 set +a
 
 REQUIRED_VARS=(
-    "DOCKER_REGISTRY"
-    "DOCKER_IMAGE_NAME"
+    "DOCKER_USERNAME"
+    "DOCKER_IMAGE"
 )
 
+echo "Checking required environment variables..."
 for var in "${REQUIRED_VARS[@]}"; do
     if [[ -z "${!var:-}" ]]; then
         echo "Error: Required environment variable $var is not set"
@@ -31,11 +33,11 @@ done
 
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 STAGING_TAG="staging-${TIMESTAMP}"
-FULL_IMAGE_NAME="${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${STAGING_TAG}"
+FULL_IMAGE_NAME="${DOCKER_USERNAME}/${DOCKER_IMAGE}:${STAGING_TAG}"
 
 echo "Building Docker image: $FULL_IMAGE_NAME"
 
-docker build -t "$FULL_IMAGE_NAME" .
+docker build -t "$FULL_IMAGE_NAME" -f "$DOCKERFILE_PATH" .
 
 if [[ $? -eq 0 ]]; then
     echo "Pushing Docker image to registry..."

@@ -32,6 +32,11 @@ DATABASE_HOST=localhost
 DATABASE_PORT=3306
 DATABASE_NAME=devsu_demo
 
+# for k8s secrets
+MYSQL_ROOT_PASSWORD="${DATABASE_PASSWORD}"
+MYSQL_USER="${DATABASE_USER}"
+MYSQL_PASSWORD="${DATABASE_PASSWORD}"
+
 # Application Configuration
 PORT=8001
 LOG_LEVEL=info
@@ -44,14 +49,15 @@ SESSION_SECRET=$(generate_secret)
 FORCE_SYNC=false
 
 # AWS Configuration for Terraform
-AWS_ACCESS_KEY=<your_aws_access_key_here>
-AWS_SECRET_KEY=<your_aws_secret_key_here>
+AWS_ACCESS_KEY="<your_aws_access_key_here>"
+AWS_SECRET_KEY="<your_aws_secret_key_here>"
 
 # External Services
 # DATABASE_URL=localhost:3306
 
 # Other Configuration
-DOCKER_USERNAME=
+DOCKER_IMAGE=devsu-demo
+DOCKER_USERNAME=khakharis
 DOCKER_PASSWORD=
 SNYK_TOKEN=
 EOF
@@ -72,6 +78,11 @@ DATABASE_HOST=localhost
 DATABASE_PORT=3306
 DATABASE_NAME=devsu_demo
 
+# for k8s secrets
+MYSQL_ROOT_PASSWORD="${DATABASE_PASSWORD}"
+MYSQL_USER="${DATABASE_USER}"
+MYSQL_PASSWORD="${DATABASE_PASSWORD}"
+
 # Application Configuration
 PORT=8000
 LOG_LEVEL=debug
@@ -84,14 +95,15 @@ SESSION_SECRET=dev_session_secret_change_in_production
 FORCE_SYNC=false
 
 # AWS Configuration for Terraform
-AWS_ACCESS_KEY=<your_aws_access_key_here>
-AWS_SECRET_KEY=<your_aws_secret_key_here>
+AWS_ACCESS_KEY="<your_aws_access_key_here>"
+AWS_SECRET_KEY="<your_aws_secret_key_here>"
 
 # External Services
 # DATABASE_URL=localhost:3306
 
 # Other Configuration
-DOCKER_USERNAME=
+DOCKER_IMAGE=devsu-demo
+DOCKER_USERNAME=khakharis
 DOCKER_PASSWORD=
 SNYK_TOKEN=
 EOF
@@ -112,6 +124,11 @@ DATABASE_HOST=localhost
 DATABASE_PORT=3306
 DATABASE_NAME=devsu_demo
 
+# for k8s secrets
+MYSQL_ROOT_PASSWORD="${DATABASE_PASSWORD}"
+MYSQL_USER="${DATABASE_USER}"
+MYSQL_PASSWORD="${DATABASE_PASSWORD}"
+
 # Application Configuration
 PORT=8000
 LOG_LEVEL=info
@@ -125,14 +142,15 @@ SESSION_SECRET=staging_session_secret_change_in_production
 FORCE_SYNC=false
 
 # AWS Configuration for Terraform
-AWS_ACCESS_KEY=<your_aws_access_key_here>
-AWS_SECRET_KEY=<your_aws_secret_key_here>
+AWS_ACCESS_KEY="<your_aws_access_key_here>"
+AWS_SECRET_KEY="<your_aws_secret_key_here>"
 
 # External Services
 # DATABASE_URL=localhost:3306
 
 # Other Configuration
-DOCKER_USERNAME=
+DOCKER_IMAGE=devsu-demo
+DOCKER_USERNAME=khakharis
 DOCKER_PASSWORD=
 SNYK_TOKEN=
 EOF
