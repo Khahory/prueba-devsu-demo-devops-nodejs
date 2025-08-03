@@ -11,6 +11,8 @@ A simple REST API application with MariaDB database for DevOps testing and deplo
 - Terraform (for infrastructure)
 - AWS CLI (for AWS EKS)
 
+## 💨 Running the Application
+
 ### 🐳 Local with Docker Compose
 ```bash
 docker compose -f infrastructure/docker/docker-compose.yml down # Stop and remove existing containers
