@@ -160,9 +160,28 @@ If the response is unsuccessful, we will receive status 400 and the following me
 
 The project includes automated GitHub Actions workflows:
 
-- **CI/CD Pipeline**: Automatic build, test, and deployment to staging on `main` push
-- **Production Deployment**: Manual deployment with confirmation required
-- **Multi-architecture**: Docker images built for AMD64 and ARM64
+### 🚀 Automatic Deployments
+
+- **Staging**: Automatic deployment on every `main` branch push
+- **Production**: Automatic deployment when creating version tags (format: `vYYYYMMDD-XX`)
+
+### 📦 Deployment Process
+
+1. **Push to `main`** → Build, test, deploy to staging
+2. **Create tag** → Build, test, deploy to production automatically
+
+```bash
+# Create production release tag (automatic deployment)
+./scripts/create-production-tag.sh
+
+# Manual deployment to production (alternative)
+gh workflow run "Deploy to Production" -f image_tag=v20240803-01 -f confirm_production=PRODUCTION
+```
+
+### 🏷️ Tag Format
+- `v20240803-01` (vYYYYMMDD-XX)
+- Automatically increments sequence number for same day
+- Multi-architecture Docker images (AMD64/ARM64)
 
 ## 🛠️ Tech Stack
 
