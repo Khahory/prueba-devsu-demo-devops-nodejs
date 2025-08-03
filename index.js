@@ -2,6 +2,8 @@ import sequelize from './shared/database/database.js';
 import { usersRouter } from './users/router.js';
 import express from 'express';
 import * as dotenv from 'dotenv';
+import User from './users/model.js';
+import { initializeDatabase, checkDatabaseConnection } from './shared/database/init.js';
 
 // Load environment variables
 dotenv.config();
@@ -27,21 +29,45 @@ app.get('/health', (req, res) => {
 
 // Database initialization
 const shouldForceSync = process.env.FORCE_SYNC === 'true';
-const syncOptions = shouldForceSync ? { force: true } : { alter: true };
 
 console.log(`${logPrefix} Initializing database...`);
 console.log(`${logPrefix} FORCE_SYNC: ${shouldForceSync}`);
 
-sequelize.sync(syncOptions)
-    .then(() => {
-        console.log(`${logPrefix} Database is ready`);
+// Initialize database with proper error handling
+async function initializeApp() {
+    try {
+        // Check database connection first
+        await checkDatabaseConnection();
+
+        // Initialize database tables
         if (shouldForceSync) {
-            console.log(`${logPrefix} ⚠️  Database tables were recreated (FORCE_SYNC=true)`);
+            console.log(`${logPrefix} ⚠️  Force recreating all tables (FORCE_SYNC=true)`);
+            await sequelize.sync({ force: true });
+            console.log(`${logPrefix} ✅ Database tables recreated successfully`);
         } else {
-            console.log(`${logPrefix} 📊 Database tables synchronized (FORCE_SYNC=false)`);
+            console.log(`${logPrefix} 📊 Initializing database tables...`);
+            await initializeDatabase();
         }
-    })
-    .catch(err => console.error(`${logPrefix} Database connection error:`, err));
+
+        console.log(`${logPrefix} Database is ready`);
+
+        // Start the server
+        const server = app.listen(PORT, () => {
+            console.log(`${logPrefix} 🚀 Server running on port ${PORT}`);
+            console.log(`${logPrefix} 📍 Health check: http://localhost:${PORT}/health`);
+            console.log(`${logPrefix} 📍 API endpoints: http://localhost:${PORT}/api/users`);
+        });
+
+        return { app, server };
+    } catch (error) {
+        console.error(`${logPrefix} ❌ Failed to initialize application:`, error);
+        // eslint-disable-next-line no-process-exit
+        process.exit(1);
+    }
+}
+
+// Start the application
+initializeApp();
 
 app.use(express.json());
 
@@ -60,10 +86,4 @@ app.use('*', (req, res) => {
     res.status(404).json({ error: 'Route not found' });
 });
 
-const server = app.listen(PORT, () => {
-    console.log(`${logPrefix} 🚀 Server running on port ${PORT}`);
-    console.log(`${logPrefix} 📍 Health check: http://localhost:${PORT}/health`);
-    console.log(`${logPrefix} 📍 API endpoints: http://localhost:${PORT}/api/users`);
-});
-
-export { app, server };
+export { app };

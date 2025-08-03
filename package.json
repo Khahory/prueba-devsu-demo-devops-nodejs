@@ -6,12 +6,16 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint . --ext .js --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "db:init": "node scripts/init-database.js",
+    "db:force": "node scripts/init-database.js --force",
+    "db:test": "node scripts/test-db-connection.js"
   },
   "author": "Devsu",
   "dependencies": {

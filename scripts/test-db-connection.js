@@ -23,14 +23,14 @@ async function testDatabaseConnection() {
         // Get all users
         console.log('📋 Retrieving users from database...');
         const users = await User.findAll();
-        
+
         if (users.length === 0) {
             console.log('ℹ️  No users found in the database.');
             console.log('💡 You can add users through the API endpoints.');
         } else {
             console.log(`✅ Found ${users.length} user(s):`);
             console.log('');
-            
+
             users.forEach((user, index) => {
                 console.log(`   User ${index + 1}:`);
                 console.log(`     ID: ${user.id}`);
@@ -69,4 +69,8 @@ async function testDatabaseConnection() {
 }
 
 // Run the test
-testDatabaseConnection(); 
+testDatabaseConnection().then(r => r).catch(err => {
+    console.error('❌ An error occurred while testing the database connection:', err);
+    // eslint-disable-next-line no-process-exit
+    process.exit(1);
+});
