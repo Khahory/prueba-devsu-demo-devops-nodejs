@@ -9,6 +9,7 @@ A simple REST API application with MariaDB database for DevOps testing and deplo
 - Docker & Docker Compose
 - kubectl (for Kubernetes)
 - Terraform (for infrastructure)
+- AWS CLI (for AWS EKS)
 
 ### 🐳 Local with Docker Compose
 ```bash
