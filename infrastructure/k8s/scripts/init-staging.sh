@@ -96,6 +96,7 @@ kubectl apply -f infrastructure/k8s/namespaces/namespaces.yaml
 
 kubectl apply -f infrastructure/k8s/staging/configmap.yaml
 kubectl apply -f infrastructure/k8s/staging/hpa.yaml
+kubectl apply -f infrastructure/k8s/staging/deployment.yaml
 kubectl apply -f infrastructure/k8s/staging/mariadb-configmap.yaml
 kubectl apply -f infrastructure/k8s/staging/mariadb-deployment.yaml
 kubectl apply -f "$TEMP_DIR/mariadb-secret.yaml"
