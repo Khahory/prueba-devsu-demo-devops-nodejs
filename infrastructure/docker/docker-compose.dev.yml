@@ -21,12 +21,6 @@ services:
       - mariadb_logs_dev:/var/log/mysql
     networks:
       - app-network-dev
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DATABASE_PASSWORD}"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
 
   app-dev:
     build:
@@ -50,9 +44,6 @@ services:
       - app_data_dev:/app/data
       - app_logs_dev:/app/logs
     restart: unless-stopped
-    depends_on:
-      mariadb-dev:
-        condition: service_healthy
     networks:
       - app-network-dev
 
