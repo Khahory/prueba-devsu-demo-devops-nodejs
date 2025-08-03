@@ -26,8 +26,8 @@ Access the health check at: [http://localhost:8000/health](http://localhost:8000
 docker compose -f infrastructure/docker/docker-compose-mariadb.yml down # Stop and remove existing containers
 ./infrastructure/scripts/setup-env.sh # Generate random secrets
 cp ./.env infrastructure/docker/.env
-npm install
 docker compose -f infrastructure/docker/docker-compose-mariadb.yml up -d --build # MariaDB only
+npm install
 npm run dev
 ```
 

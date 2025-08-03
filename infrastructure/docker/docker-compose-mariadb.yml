@@ -24,7 +24,7 @@ services:
       - mariadb_data_dev:/var/lib/mysql
       - mariadb_logs_dev:/var/log/mysql
     networks:
-      - app-network-dev
+      - app-network-dev-mariadb
 
 volumes:
   mariadb_data_dev:
@@ -33,5 +33,5 @@ volumes:
     driver: local
 
 networks:
-  app-network-dev:
+  app-network-dev-mariadb:
     driver: bridge 
