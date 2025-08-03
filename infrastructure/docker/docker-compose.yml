@@ -21,6 +21,8 @@ services:
       - app-network-dev
 
   app-dev:
+    depends_on:
+      - mariadb-dev
     build:
       context: ../..
       dockerfile: infrastructure/docker/Dockerfile.dev

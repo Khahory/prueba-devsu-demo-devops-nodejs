@@ -18,7 +18,7 @@ cp ./.env.dev infrastructure/docker/.env
 docker compose -f infrastructure/docker/docker-compose.yml up -d
 ```
 
-Access the health check at: `http://localhost:8000/health`
+Access the health check at: [http://localhost:8000/health](http://localhost:8000/health)
 
 ### 🏗️ Local api and Docker Container for MariaDB
 ```bash
@@ -28,7 +28,7 @@ docker compose -f infrastructure/docker/docker-compose.yml up -d  # MariaDB only
 npm run dev
 ```
 
-Access the health check at: `http://localhost:8001/health`
+Access the health check at: [http://localhost:8001/health](http://localhost:8001/health)
 
 ### 🏗️ Terraform (Infrastructure) - Create AWS EKS Cluster
 
