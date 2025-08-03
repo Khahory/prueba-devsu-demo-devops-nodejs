@@ -18,6 +18,8 @@ cp ./.env.dev infrastructure/docker/.env
 docker compose -f infrastructure/docker/docker-compose.yml up -d
 ```
 
+Access the health check at: `http://localhost:8000/health`
+
 ### 🏗️ Local api and Docker Container for MariaDB
 ```bash
 ./infrastructure/scripts/setup-env.sh
@@ -25,6 +27,8 @@ npm install
 docker compose -f infrastructure/docker/docker-compose.yml up -d  # MariaDB only
 npm run dev
 ```
+
+Access the health check at: `http://localhost:8001/health`
 
 ### 🏗️ Terraform (Infrastructure) - Create AWS EKS Cluster
 
@@ -73,8 +77,7 @@ kubectl get service devsu-demo-service -n devsu-demo-staging -o jsonpath='{.stat
 ```bash
 kubectl get service devsu-demo-service -n devsu-demo-prod -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
 ```
-
-Use the returned DNS URL to test the application endpoints (e.g., `http://<dns-url>/api/users`).
+Use the returned DNS URL to test the application endpoints (e.g., `http://<dns-url>/health`).
 
 ## 🧪 Testing
 
@@ -93,7 +96,7 @@ mariadb -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE"
 select * from users;
 ```
 
-Access the API at: `http://localhost:8000/api/users`
+Access the API at: `http://<URL>/api/users`
 
 ### Features
 
