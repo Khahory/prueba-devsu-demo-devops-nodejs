@@ -55,26 +55,12 @@ spec:
             memory: "512Mi"
             cpu: "250m"
         livenessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-            - -h
-            - localhost
-            - -u
-            - root
-            - -p$(MYSQL_ROOT_PASSWORD)
+          tcpSocket:
+            port: 3306
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
-          exec:
-            command:
-            - mysqladmin
-            - ping
-            - -h
-            - localhost
-            - -u
-            - root
-            - -p$(MYSQL_ROOT_PASSWORD)
+          tcpSocket:
+            port: 3306
           initialDelaySeconds: 5
           periodSeconds: 5
