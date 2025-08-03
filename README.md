@@ -53,15 +53,12 @@ terraform init # when prompted, enter 'devsu-demo-prod' or 'devsu-demo-stage' as
 
 # STAGING
 terraform workspace new devsu-demo-stage # Create a new workspace for staging
-terraform plan
-terraform apply
-./infrastructure/k8s/scripts/init-staging.sh to-terraform # Initialize staging environment
 
 # PRODUCTION
 terraform workspace new devsu-demo-prod # Create a new workspace for production
+
 terraform plan
 terraform apply
-./infrastructure/k8s/scripts/init-prod.sh to-terraform # Initialize production environment
 ```
 
 ### ☸️ Kubernetes (Staging)
@@ -70,7 +67,7 @@ terraform apply
 # REGION_DEFAULT: us-east-1
 aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
 ./infrastructure/scripts/setup-env.sh
-./infrastructure/k8s/scripts/init-staging.sh
+./infrastructure/k8s/scripts/init-staging.sh to-terraform # Initialize staging environment
 ./infrastructure/scripts/build-and-push-docker-image.sh infrastructure/docker/Dockerfile
 ```
 
@@ -80,7 +77,7 @@ aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
 # REGION_DEFAULT: us-east-1
 aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
 ./infrastructure/scripts/setup-env.sh
-./infrastructure/k8s/scripts/init-prod.sh
+./infrastructure/k8s/scripts/init-prod.sh to-terraform # Initialize production environment
 ./infrastructure/scripts/build-and-push-docker-image.sh infrastructure/docker/Dockerfile
 ```
 
