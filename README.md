@@ -26,6 +26,11 @@ npm run dev
 ```
 
 ### 🏗️ Terraform (Infrastructure) - Create AWS EKS Cluster
+
+**Prerequisites:**
+- AWS CLI installed and authenticated (`aws configure`)
+- Terraform Cloud account with access key and password configured
+
 ```bash
 cd infrastructure/terraform
 cp terraform.tfvars.example terraform.tfvars
