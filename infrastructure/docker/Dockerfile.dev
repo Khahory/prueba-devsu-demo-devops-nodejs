@@ -44,4 +44,5 @@ LABEL stage="development"
 LABEL architecture="arm64"
 
 # Use nodemon for hot reload in development
-CMD ["nodemon", "--legacy-watch", "index.js"] 
+CMD ["nodemon", "--legacy-watch", "index.js"]
+#CMD ["tail", "-f", "/dev/null"]

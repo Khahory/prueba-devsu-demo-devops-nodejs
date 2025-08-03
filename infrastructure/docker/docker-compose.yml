@@ -1,9 +1,9 @@
 services:
-  # MariaDB Database
-  mariadb:
+  # MariaDB Database for Development
+  mariadb-dev:
     image: mariadb:11.8
     platform: linux/arm64
-    container_name: devsu-mariadb
+    container_name: devsu-mariadb-dev
     restart: unless-stopped
     environment:
       MARIADB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
@@ -13,61 +13,44 @@ services:
     ports:
       - "${DATABASE_PORT:-3306}:3306"
     volumes:
-      - mariadb_data:/var/lib/mysql
-      - mariadb_logs:/var/log/mysql
+      - mariadb_data_dev:/var/lib/mysql
+      - mariadb_logs_dev:/var/log/mysql
     networks:
-      - app-network
+      - app-network-dev
 
-  app:
+  app-dev:
     build:
       context: ../..
-      dockerfile: infrastructure/docker/Dockerfile
-      target: runner
+      dockerfile: infrastructure/docker/Dockerfile.dev
       platforms:
         - linux/amd64
         - linux/arm64
     platform: linux/arm64
-    container_name: devsu-nodejs-api
+    container_name: devsu-nodejs-api-dev
     ports:
       - "8000:8000"
     environment:
-      - NODE_ENV=production
-      - DATABASE_HOST=mariadb
+      - NODE_ENV=development
+      - DATABASE_HOST=mariadb-dev
     volumes:
-      - app_data:/app/data
-      - app_logs:/app/logs
+      - ../..:/app
+      - /app/node_modules
+      - app_data_dev:/app/data
+      - app_logs_dev:/app/logs
     restart: unless-stopped
     networks:
-      - app-network
-
-  # Reverse proxy for production
-  nginx:
-    image: nginx:alpine
-    platform: linux/arm64
-    container_name: devsu-nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - app
-    restart: unless-stopped
-    networks:
-      - app-network
-    profiles:
-      - production
+      - app-network-dev
 
 volumes:
-  mariadb_data:
+  mariadb_data_dev:
     driver: local
-  mariadb_logs:
+  mariadb_logs_dev:
     driver: local
-  app_data:
+  app_data_dev:
     driver: local
-  app_logs:
+  app_logs_dev:
     driver: local
 
 networks:
-  app-network:
+  app-network-dev:
     driver: bridge 

@@ -135,22 +135,11 @@ docker run -p 8000:8000 devsu-nodejs-api:latest
 
 #### Development with Docker
 
-```bash
-# Run development environment with hot reload
-docker-compose -f infrastructure/docker/docker-compose.dev.yml up --build
-
-# Run in background
-docker-compose -f infrastructure/docker/docker-compose.dev.yml up -d
-```
-
 #### Staging Environment
 
 ```bash
 # Setup staging environment
 cp infrastructure/env/env.staging.example .env.staging
-
-# Run staging environment
-docker-compose -f infrastructure/docker/docker-compose.staging.yml up -d
 
 # Access staging
 curl http://localhost:8001/health  # Direct access
@@ -162,9 +151,6 @@ curl http://localhost:8080/health  # Through reverse proxy
 ```bash
 # Setup secrets first
 ./infrastructure/scripts/setup-secrets.sh
-
-# Run with Nginx reverse proxy and Docker secrets
-docker-compose -f infrastructure/docker/docker-compose.prod.yml up -d
 ```
 
 #### Reverse Proxy Testing
@@ -296,31 +282,10 @@ docker-compose --profile production restart nginx
 
 #### Quick Commands Reference
 
-**Development:**
-```bash
-# Start development environment
-docker-compose -f infrastructure/docker/docker-compose.dev.yml up -d
-
-# View development logs
-docker-compose -f infrastructure/docker/docker-compose.dev.yml logs -f
-```
-
-**Staging:**
-```bash
-# Start staging environment
-docker-compose -f infrastructure/docker/docker-compose.staging.yml up -d
-
-# View staging logs
-docker-compose -f infrastructure/docker/docker-compose.staging.yml logs -f
-```
-
 **Production:**
 ```bash
 # Start with reverse proxy
 docker-compose -f infrastructure/docker/docker-compose.yml --profile production up -d
-
-# Start with Docker secrets
-docker-compose -f infrastructure/docker/docker-compose.prod.yml up -d
 
 # View production logs
 docker-compose -f infrastructure/docker/docker-compose.yml --profile production logs -f
