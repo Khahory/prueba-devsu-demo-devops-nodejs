@@ -10,21 +10,6 @@ A simple REST API application with MariaDB database for DevOps testing and deplo
 - kubectl (for Kubernetes)
 - Terraform (for infrastructure)
 
-### 🏗️ Terraform (Infrastructure)
-```bash
-cd infrastructure/terraform
-cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars with your settings
-./scripts/get-aws-resources.sh
-terraform init
-terraform login
-terraform workspace new devsu-demo-prod # Create a new workspace for production
-terraform workspace new devsu-demo-stage # Create a new workspace for staging
-terraform plan
-terraform apply
-./infrastructure/k8s/scripts/init-staging.sh to-terraform
-```
-
 ### 🐳 Local with Docker Compose
 ```bash
 ./infrastructure/scripts/setup-env.sh
@@ -40,12 +25,50 @@ docker compose -f infrastructure/docker/docker-compose.yml up -d  # MariaDB only
 npm run dev
 ```
 
+### 🏗️ Terraform (Infrastructure) - Create AWS EKS Cluster
+```bash
+cd infrastructure/terraform
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars with your settings
+./scripts/get-aws-resources.sh
+terraform init
+terraform login
+terraform workspace new devsu-demo-prod # Create a new workspace for production
+terraform workspace new devsu-demo-stage # Create a new workspace for staging
+terraform plan
+terraform apply
+./infrastructure/k8s/scripts/init-staging.sh to-terraform
+```
+
 ### ☸️ Kubernetes (Staging)
 ```bash
 ./infrastructure/scripts/setup-env.sh
 ./infrastructure/k8s/scripts/init-staging.sh
 ./infrastructure/scripts/build-and-push-docker-image.sh infrastructure/docker/Dockerfile
 ```
+
+### ☸️ Kubernetes (Production)
+```bash
+./infrastructure/scripts/setup-env.sh
+./infrastructure/k8s/scripts/init-prod.sh
+./infrastructure/scripts/build-and-push-docker-image.sh infrastructure/docker/Dockerfile
+```
+
+### 🌐 Get Service DNS
+
+After deploying to Kubernetes, you can get the DNS of the LoadBalancer service to test the application:
+
+**Staging Environment:**
+```bash
+kubectl get service devsu-demo-service -n devsu-demo-staging -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+```
+
+**Production Environment:**
+```bash
+kubectl get service devsu-demo-service -n devsu-demo-prod -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+```
+
+Use the returned DNS URL to test the application endpoints (e.g., `http://<dns-url>/api/users`).
 
 ## 🧪 Testing
 
