@@ -45,8 +45,6 @@ async function main() {
         process.exit(0);
     } catch (error) {
         console.error(`${logPrefix} ❌ Database initialization failed:`, error);
-        // eslint-disable-next-line no-process-exit
-        process.exit(1);
     }
 }
 

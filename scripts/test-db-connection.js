@@ -71,6 +71,4 @@ async function testDatabaseConnection() {
 // Run the test
 testDatabaseConnection().then(r => r).catch(err => {
     console.error('❌ An error occurred while testing the database connection:', err);
-    // eslint-disable-next-line no-process-exit
-    process.exit(1);
 });

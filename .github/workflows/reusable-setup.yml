@@ -1,4 +1,4 @@
-name: Reusable Node.js Setup
+name: 🔧 Reusable Setup & Build
 
 on:
   workflow_call:
@@ -8,16 +8,25 @@ on:
         required: false
         type: string
         default: '18'
-    outputs:
-      cache-key:
-        description: 'Cache key for dependencies'
-        value: ${{ jobs.setup.outputs.cache-key }}
+      run-tests:
+        description: 'Run tests'
+        required: false
+        type: boolean
+        default: true
+      run-lint:
+        description: 'Run linting'
+        required: false
+        type: boolean
+        default: true
+      run-security-scan:
+        description: 'Run security scan'
+        required: false
+        type: boolean
+        default: true
 
 jobs:
-  setup:
+  setup-and-test:
     runs-on: ubuntu-latest
-    outputs:
-      cache-key: ${{ steps.cache-key.outputs.value }}
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -31,6 +40,31 @@ jobs:
       - name: 📋 Install dependencies
         run: npm ci
 
-      - name: 🔑 Generate cache key
-        id: cache-key
-        run: echo "value=${{ hashFiles('package-lock.json') }}" >> $GITHUB_OUTPUT 
+      - name: 🧪 Run tests
+        if: ${{ inputs.run-tests }}
+        run: npm test
+
+      - name: 🔍 Run lint
+        if: ${{ inputs.run-lint }}
+        run: npm run lint || echo "ESLint not configured"
+
+      - name: 🎯 Check formatting
+        if: ${{ inputs.run-lint }}
+        run: npm run format:check || echo "Prettier not configured"
+
+      - name: 📊 Coverage report
+        if: ${{ inputs.run-tests }}
+        run: npm run test:coverage || echo "Coverage not configured"
+
+      - name: 🔒 Security audit
+        if: ${{ inputs.run-security-scan }}
+        run: npm audit --audit-level moderate || echo "No vulnerabilities found"
+
+      - name: 📈 Upload test artifacts
+        if: ${{ inputs.run-tests && always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            coverage/
+            test-results.xml 

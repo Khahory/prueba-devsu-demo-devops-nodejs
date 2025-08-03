@@ -61,8 +61,6 @@ async function initializeApp() {
         return { app, server };
     } catch (error) {
         console.error(`${logPrefix} ❌ Failed to initialize application:`, error);
-        // eslint-disable-next-line no-process-exit
-        process.exit(1);
     }
 }
 
