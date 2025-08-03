@@ -66,6 +66,9 @@ terraform apply
 
 ### ☸️ Kubernetes (Staging)
 ```bash
+# CLUSTER_NAME_DEFAULT: devsu-demo-stage-eks
+# REGION_DEFAULT: us-east-1
+aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
 ./infrastructure/scripts/setup-env.sh
 ./infrastructure/k8s/scripts/init-staging.sh
 ./infrastructure/scripts/build-and-push-docker-image.sh infrastructure/docker/Dockerfile
@@ -73,6 +76,9 @@ terraform apply
 
 ### ☸️ Kubernetes (Production)
 ```bash
+# CLUSTER_NAME_DEFAULT: devsu-demo-prod-eks
+# REGION_DEFAULT: us-east-1
+aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
 ./infrastructure/scripts/setup-env.sh
 ./infrastructure/k8s/scripts/init-prod.sh
 ./infrastructure/scripts/build-and-push-docker-image.sh infrastructure/docker/Dockerfile
