@@ -18,7 +18,7 @@ cp ./.env.dev infrastructure/docker/.env
 docker compose -f infrastructure/docker/docker-compose.yml up -d
 ```
 
-### 🏗️ Local with Docker Container
+### 🏗️ Local api and Docker Container for MariaDB
 ```bash
 ./infrastructure/scripts/setup-env.sh
 npm install
