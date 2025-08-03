@@ -1,1 +1,0 @@
-// This file is intentionally empty to avoid Jest running it as a test
