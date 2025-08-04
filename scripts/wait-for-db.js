@@ -44,6 +44,7 @@ async function waitForDatabase() {
 
             if (attempt === maxRetries) {
                 console.error('❌ Max retries reached. Database is not ready.');
+                // eslint-disable-next-line no-process-exit
                 process.exit(1);
             }
 
@@ -56,5 +57,6 @@ async function waitForDatabase() {
 // Run the wait function
 waitForDatabase().catch(error => {
     console.error('❌ Error waiting for database:', error);
+    // eslint-disable-next-line no-process-exit
     process.exit(1);
 });

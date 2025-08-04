@@ -2,8 +2,7 @@ import sequelize from './shared/database/database.js';
 import { usersRouter } from './users/router.js';
 import express from 'express';
 import * as dotenv from 'dotenv';
-import User from './users/model.js';
-import { initializeDatabase, checkDatabaseConnection, retryDatabaseConnection } from './shared/database/init.js';
+import { initializeDatabase, retryDatabaseConnection } from './shared/database/init.js';
 
 // Load environment variables
 dotenv.config();
@@ -61,6 +60,7 @@ async function initializeApp() {
         return { app, server };
     } catch (error) {
         console.error(`${logPrefix} ❌ Failed to initialize application:`, error);
+        // eslint-disable-next-line no-process-exit
         process.exit(1);
     }
 }
@@ -74,7 +74,7 @@ app.use(express.json());
 app.use('/api/users', usersRouter);
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     console.error(`${logPrefix} Error:`, err.stack);
     res.status(500).json({ error: 'Something went wrong!' });
 });

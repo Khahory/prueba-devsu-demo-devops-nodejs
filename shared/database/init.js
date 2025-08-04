@@ -1,5 +1,4 @@
 import sequelize from './database.js';
-import User from '../../users/model.js';
 
 /**
  * Wait for a specified amount of time
@@ -56,7 +55,7 @@ export async function initializeDatabase() {
         console.log('📊 Available tables:');
 
         // List all tables in the database
-        const tables = await sequelize.showAllSchemas();
+        await sequelize.showAllSchemas();
         console.log('   - users (User model)');
 
         return true;
