@@ -295,7 +295,7 @@ terraform destroy -auto-approve # Destroy production infrastructure
 # STAGING
 kubectl delete service devsu-demo-service -n devsu-demo-staging # Delete LoadBalancer service AWS
 cd infrastructure/terraform
-terraform workspace select devsu-demo-stage-eks # Select stage workspace
+terraform workspace select devsu-demo-stage # Select staging workspace
 terraform destroy -auto-approve # Destroy stage infrastructure
 
 ```
