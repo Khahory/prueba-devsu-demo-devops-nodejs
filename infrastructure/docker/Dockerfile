@@ -42,6 +42,9 @@ RUN chown -R nodeuser:nodejs /app
 COPY --from=deps --chown=nodeuser:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nodeuser:nodejs /app ./
 
+# Make scripts executable
+RUN chmod +x scripts/init-database.js scripts/wait-for-db.js
+
 ENV NODE_ENV=production
 ENV PORT=8000
 

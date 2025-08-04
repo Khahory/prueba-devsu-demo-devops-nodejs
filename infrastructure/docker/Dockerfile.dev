@@ -22,6 +22,8 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+RUN chmod +x scripts/init-database.js scripts/wait-for-db.js
+
 # Create necessary directories
 RUN mkdir -p /app/data /app/logs
 
