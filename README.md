@@ -71,6 +71,8 @@ aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
 cd ../../
 
 ./infrastructure/k8s/scripts/init-staging.sh to-terraform # Initialize staging environment
+
+# OPTIONAL: If you want to build and push the Docker image manually
 ./infrastructure/scripts/build-and-push-docker-image.sh infrastructure/docker/Dockerfile
 ```
 
@@ -84,6 +86,8 @@ aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
 cd ../../
 
 ./infrastructure/k8s/scripts/init-prod.sh to-terraform # Initialize production environment
+
+# OPTIONAL: If you want to build and push the Docker image manually
 ./infrastructure/scripts/build-and-push-docker-image.sh infrastructure/docker/Dockerfile
 ```
 
