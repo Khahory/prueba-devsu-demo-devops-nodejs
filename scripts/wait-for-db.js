@@ -24,7 +24,7 @@ async function waitForDatabase() {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
             console.log(`🔄 Attempt ${attempt}/${maxRetries}: Connecting to database...`);
-            
+
             const connection = await mysql.createConnection({
                 host: DATABASE_HOST,
                 port: DATABASE_PORT,
@@ -36,17 +36,17 @@ async function waitForDatabase() {
 
             await connection.ping();
             await connection.end();
-            
+
             console.log('✅ Database is ready!');
             return true;
         } catch (error) {
             console.log(`❌ Attempt ${attempt} failed: ${error.message}`);
-            
+
             if (attempt === maxRetries) {
                 console.error('❌ Max retries reached. Database is not ready.');
                 process.exit(1);
             }
-            
+
             console.log(`⏳ Waiting ${retryDelay}ms before next attempt...`);
             await new Promise(resolve => setTimeout(resolve, retryDelay));
         }
@@ -57,4 +57,4 @@ async function waitForDatabase() {
 waitForDatabase().catch(error => {
     console.error('❌ Error waiting for database:', error);
     process.exit(1);
-}); 
+});

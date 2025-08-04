@@ -25,12 +25,12 @@ export async function retryDatabaseConnection(maxRetries = 10, baseDelay = 1000)
             return true;
         } catch (error) {
             console.log(`❌ Connection attempt ${attempt} failed: ${error.message}`);
-            
+
             if (attempt === maxRetries) {
                 console.error('❌ Max retries reached. Unable to connect to database.');
                 throw error;
             }
-            
+
             const delay = baseDelay * Math.pow(2, attempt - 1);
             console.log(`⏳ Waiting ${delay}ms before next attempt...`);
             await wait(delay);
