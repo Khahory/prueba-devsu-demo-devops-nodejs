@@ -111,7 +111,7 @@ jobs:
           # Wait for rollout
           kubectl rollout status deployment/devsu-demo-app -n devsu-demo-staging --timeout=300s
           
-          # Verify deployment  
+          # Verify deployment
           kubectl get pods -n devsu-demo-staging
 
   # ===== DEPLOY TO PRODUCTION =====
@@ -152,12 +152,9 @@ jobs:
           
           # Wait for rollout
           kubectl rollout status deployment/devsu-demo-app -n devsu-demo-prod --timeout=600s
-
-      - name: 🧪 Production Health Check
-        run: |
-          # Wait for pods to be ready
-          kubectl wait --for=condition=ready pod -l app=devsu-demo -n devsu-demo-prod --timeout=300s
-          echo "✅ Production deployment successful"
+          
+          # Verify deployment
+          kubectl get pods -n devsu-demo-prod
 
       - name: 📊 Production Summary
         run: |
