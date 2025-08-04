@@ -8,7 +8,7 @@ metadata:
     environment: production
     component: app
 spec:
-  replicas: 5
+  replicas: 3
   selector:
     matchLabels:
       app: devsu-demo
@@ -84,11 +84,11 @@ spec:
               key: SESSION_SECRET
         resources:
           requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
             memory: "512Mi"
             cpu: "500m"
-          limits:
-            memory: "1Gi"
-            cpu: "1000m"
         livenessProbe:
           httpGet:
             path: /health

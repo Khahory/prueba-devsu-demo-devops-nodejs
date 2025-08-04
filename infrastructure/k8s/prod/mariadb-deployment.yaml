@@ -47,16 +47,13 @@ spec:
             secretKeyRef:
               name: mariadb-secrets
               key: MYSQL_PASSWORD
-        volumeMounts:
-        - name: mariadb-data
-          mountPath: /var/lib/mysql
         resources:
           requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
             memory: "512Mi"
             cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
         livenessProbe:
           tcpSocket:
             port: 3306
@@ -67,7 +64,3 @@ spec:
             port: 3306
           initialDelaySeconds: 5
           periodSeconds: 5
-      volumes:
-      - name: mariadb-data
-        persistentVolumeClaim:
-          claimName: mariadb-pvc 
