@@ -106,6 +106,30 @@ kubectl get service devsu-demo-service -n devsu-demo-prod -o jsonpath='{.status.
 ```
 Use the returned DNS URL to test the application endpoints (e.g., `http://<dns-url>/health`).
 
+## 🔄 CI/CD Pipeline
+
+The project includes automated GitHub Actions workflows:
+
+### 🚀 Automatic Deployments
+
+- **Staging**: Automatic deployment on every `main` branch push
+- **Production**: Automatic deployment when creating version tags (format: `vYYYYMMDD-XX`)
+
+### 📦 Deployment Process
+
+1. **Push to `main`** → Build, test, deploy to staging
+2. **Create tag** → Build, test, deploy to production automatically
+
+```bash
+# Create production release tag (automatic deployment)
+./scripts/create-production-tag.sh # on root of the project
+```
+
+### 🏷️ Tag Format
+- `v20240803-01` (vYYYYMMDD-XX)
+- Automatically increments sequence number for same day
+- Multi-architecture Docker images (AMD64/ARM64)
+
 ## 🧪 Testing
 
 ```bash
@@ -217,33 +241,6 @@ If the response is unsuccessful, we will receive status 400 and the following me
     ]
 }
 ```
-
-## 🔄 CI/CD Pipeline
-
-The project includes automated GitHub Actions workflows:
-
-### 🚀 Automatic Deployments
-
-- **Staging**: Automatic deployment on every `main` branch push
-- **Production**: Automatic deployment when creating version tags (format: `vYYYYMMDD-XX`)
-
-### 📦 Deployment Process
-
-1. **Push to `main`** → Build, test, deploy to staging
-2. **Create tag** → Build, test, deploy to production automatically
-
-```bash
-# Create production release tag (automatic deployment)
-./scripts/create-production-tag.sh
-
-# Manual deployment to production (alternative)
-gh workflow run "Deploy to Production" -f image_tag=v20240803-01 -f confirm_production=PRODUCTION
-```
-
-### 🏷️ Tag Format
-- `v20240803-01` (vYYYYMMDD-XX)
-- Automatically increments sequence number for same day
-- Multi-architecture Docker images (AMD64/ARM64)
 
 ## 🛠️ Tech Stack
 
