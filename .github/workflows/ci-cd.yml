@@ -139,11 +139,6 @@ jobs:
         run: |
           aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name devsu-demo-prod-eks
 
-      - name: 🏗️ Initialize Production Infrastructure
-        run: |
-          # Initialize production K8s resources
-          bash infrastructure/k8s/scripts/init-prod.sh
-
       - name: 🚀 Deploy to production
         run: |
           # Extract tag name and create image tag
