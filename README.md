@@ -11,6 +11,21 @@ A simple REST API application with MariaDB database for DevOps testing and deplo
 - Terraform (for infrastructure)
 - AWS CLI (for AWS EKS)
 
+### Environment Variables and Secrets on GitHub Actions
+
+#### Variables
+```shell
+DOCKER_USERNAME - Your Docker Hub username
+```
+
+#### Secrets
+```shell
+AWS_ACCESS_KEY_ID - Your AWS access key ID
+AWS_SECRET_ACCESS_KEY - Your AWS secret access key
+DOCKER_PASSWORD - Your Docker Hub password
+SNYK_TOKEN - Your Snyk token for security scanning
+```
+
 ## 💨 Running the Application
 
 ### 🐳 Local with Docker Compose

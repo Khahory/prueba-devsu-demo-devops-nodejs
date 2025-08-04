@@ -68,6 +68,8 @@ DOCKER_IMAGE=devsu-demo
 DOCKER_USERNAME=khakharis
 DOCKER_PASSWORD=
 SNYK_TOKEN=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
 EOF
 
 # If running in Terraform mode, also create .env.terraform
