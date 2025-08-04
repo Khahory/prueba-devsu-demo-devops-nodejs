@@ -279,6 +279,27 @@ If the response is unsuccessful, we will receive status 400 and the following me
 └── .github/workflows/  # CI/CD pipelines
 ```
 
+## 🔥 Destroying the Environment 🔥
+```shell
+# Set the EKS cluster name and region
+aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
+
+# Go to root of the project
+
+# PRODUCTION
+kubectl delete service devsu-demo-service -n devsu-demo-prod # Delete LoadBalancer service AWS
+cd infrastructure/terraform
+terraform workspace select devsu-demo-prod # Select production workspace
+terraform destroy -auto-approve # Destroy production infrastructure
+
+# STAGING
+kubectl delete service devsu-demo-service -n devsu-demo-staging # Delete LoadBalancer service AWS
+cd infrastructure/terraform
+terraform workspace select devsu-demo-stage-eks # Select stage workspace
+terraform destroy -auto-approve # Destroy stage infrastructure
+
+```
+
 ## License
 
 Copyright © 2023 Devsu. All rights reserved.
