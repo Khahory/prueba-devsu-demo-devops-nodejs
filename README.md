@@ -66,7 +66,10 @@ terraform apply
 # CLUSTER_NAME_DEFAULT: devsu-demo-stage-eks
 # REGION_DEFAULT: us-east-1
 aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
-./infrastructure/scripts/setup-env.sh
+
+# Go to root of the project
+cd ../../
+
 ./infrastructure/k8s/scripts/init-staging.sh to-terraform # Initialize staging environment
 ./infrastructure/scripts/build-and-push-docker-image.sh infrastructure/docker/Dockerfile
 ```
@@ -76,7 +79,10 @@ aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
 # CLUSTER_NAME_DEFAULT: devsu-demo-prod-eks
 # REGION_DEFAULT: us-east-1
 aws eks --region <your-region> update-kubeconfig --name <your-cluster-name>
-./infrastructure/scripts/setup-env.sh
+
+# Go to root of the project
+cd ../../
+
 ./infrastructure/k8s/scripts/init-prod.sh to-terraform # Initialize production environment
 ./infrastructure/scripts/build-and-push-docker-image.sh infrastructure/docker/Dockerfile
 ```
